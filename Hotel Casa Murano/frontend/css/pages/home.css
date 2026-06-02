@@ -1,0 +1,440 @@
+.hero-section {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.slider {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+
+.slide.active {
+  opacity: 1;
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(35%);
+}
+
+.nombrehotel {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: white;
+  margin-bottom: 0px;
+  margin-top: 200px;
+}
+
+.nombrehotel h1 {
+  font-family: var(--font-heading);
+  font-size: 59.5px;
+  letter-spacing: 5px;
+}
+
+.nombrehotel h2 {
+  font-family: var(--font-heading);
+  font-size: 35.3px;
+  letter-spacing: 5px;
+}
+
+.reserva {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.reserva-box {
+  position: relative;
+  background-color: rgba(246, 246, 245, 0.1);
+  padding: 10px 30px;
+  border-radius: 75px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  border: 3px solid var(--primary-light);
+  margin-top: 250px;
+}
+
+.label-reserva {
+  font-family: var(--font-body);
+  font-size: 15.6px;
+  color: var(--primary-light);
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+  line-height: 1;
+  letter-spacing: 1px;
+}
+
+.input-invisible {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.campo {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fecha-display {
+  font-family: var(--font-heading);
+  text-align: center;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+}
+
+#dia-entrada, #dia-salida {
+  font-size: 34.6px;
+  margin: 0;
+  font-weight: normal;
+}
+
+#mes-entrada, #mes-salida {
+  font-size: 15.6px;
+  margin-top: -5px;
+  text-transform: capitalize;
+}
+
+.icon-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+  cursor: pointer;
+  justify-content: center;
+}
+
+.icon-wrapper {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon-wrapper img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.icon-group span {
+  font-family: var(--font-heading);
+  font-size: 25px;
+  color: white;
+  margin-right: 10px;
+}
+
+.ocupacion-dropdown {
+  display: none;
+  position: absolute;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 101;
+  bottom: calc(100% + 10px);
+  right: 10;
+  min-width: 180px;
+}
+
+.control-pasajero {
+  color: black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+  font-family: var(--font-heading);
+}
+
+.control-pasajero input {
+  width: 45px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.fechas-container {
+  display: flex;
+  gap: 15px;
+  padding: 10px 30px;
+  border: 2px solid var(--primary-light);
+  border-radius: 35px;
+  margin-right: 10px;
+  align-items: flex-start;
+}
+
+.ocupacion-bloque {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+main {
+  background-color: white;
+}
+
+#bienvenidos {
+  display: grid;
+  grid-template-areas: "header header" "texto imagen";
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 50px auto 100px;
+  padding: 50px 20px;
+  background-color: white;
+  align-items: center;
+  justify-items: center;
+}
+
+.titulo {
+  grid-area: header;
+  text-align: center;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.titulo h2 {
+  font-family: var(--font-decorative);
+  color: var(--gold);
+  font-size: 60.3px;
+  margin: 0;
+  font-weight: 400;
+}
+
+.titulo h3 {
+  font-family: var(--font-body);
+  color: var(--bg-black);
+  font-size: 30.3px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: -10px;
+}
+
+.titulo h3::after{
+  content: url("/frontend/images/decoracion/linea.png");
+  display: block;
+  font-size: 30px;
+  color: var(--gold);
+  margin-top: 0;
+  letter-spacing: 10px;
+}
+
+.texto_bienvenida {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.texto_bienvenida p {
+  font-family: var(--font-heading);
+  font-size: 23.3px;
+  color: black;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  text-align: justify;
+  max-width: 600px;
+}
+
+.texto_bienvenida h4 {
+  font-family: var(--font-heading);
+  font-size: 23.3px;
+  color: var(--gold);
+  margin: 0;
+}
+
+
+
+.imagen_lateral img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 4px;
+}
+
+@media (max-width: 992px) {
+  .reserva-box {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 15px 20px;
+    border-radius: 40px;
+  }
+
+  .fechas-container {
+    padding: 8px 15px;
+    margin-right: 0;
+  }
+
+  #dia-entrada, #dia-salida {
+    font-size: 28px;
+  }
+
+  .nombrehotel h1 {
+    font-size: 45px;
+  }
+
+  .nombrehotel h2 {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  #bienvenidos {
+    grid-template-areas: "header" "imagen" "texto";
+    grid-template-columns: 1fr;
+  }
+  .titulo h2 { font-size: 45px; }
+  .titulo h3 { font-size: 24px; }
+
+  .hero-section {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .reserva-box {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    border-radius: 30px;
+  }
+
+  .fechas-container {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .campo {
+    width: auto;
+  }
+
+  #dia-entrada, #dia-salida {
+    font-size: 24px;
+  }
+
+  .nombrehotel {
+    margin-bottom: 15px;
+  }
+
+  .nombrehotel h1 {
+    font-size: 38px;
+  }
+
+  .nombrehotel h2 {
+    font-size: 24px;
+  }
+
+  .icon-group span {
+    font-size: 20px;
+  }
+
+  .btn-reserva-home {
+    font-size: 18px;
+    padding: 8px 20px;
+  }
+
+  .texto_bienvenida p {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nombrehotel {
+    margin-top: 150px;
+  }
+
+  .nombrehotel h1 {
+    font-size: 30px;
+  }
+
+  .nombrehotel h2 {
+    font-size: 20px;
+  }
+
+  .reserva-box {
+    padding: 12px;
+    border-radius: 25px;
+    gap: 10px;
+  }
+
+  .fechas-container {
+    padding: 6px 10px;
+    gap: 8px;
+  }
+
+  .label-reserva {
+    font-size: 12px;
+  }
+
+  #dia-entrada, #dia-salida {
+    font-size: 20px;
+  }
+
+  #mes-entrada, #mes-salida {
+    font-size: 13px;
+  }
+
+  .icon-group span {
+    font-size: 18px;
+  }
+
+  .icon-wrapper {
+    width: 28px;
+    height: 28px;
+  }
+
+  .btn-reserva-home {
+    font-size: 16px;
+    padding: 6px 15px;
+  }
+
+  .titulo h2 {
+    font-size: 36px;
+  }
+
+  .titulo h3 {
+    font-size: 22px;
+  }
+
+  .texto_bienvenida p {
+    font-size: 18px;
+  }
+}
+

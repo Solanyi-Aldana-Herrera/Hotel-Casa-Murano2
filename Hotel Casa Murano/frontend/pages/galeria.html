@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Casa Murano</title>
+    
+    <link rel="icon" href="/frontend/images/logo/favicon.png" type="image/png" sizes="16x16">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Forum&family=Fraunces:opsz,wght@9..144,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Forum&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Fraunces:opsz,wght@9..144,400&family=Forum&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/css/base.css">
+    <link rel="stylesheet" href="/frontend/css/layout.css">
+    <link rel="stylesheet" href="/frontend/css/components.css">
+    <link rel="stylesheet" href="/frontend/css/pages/galeria.css">
+</head>
+<body>
+
+
+    <!-- Navegador-Menu -->
+    <header>
+        <div class="navegador">
+            <div class="logo">
+                <a href="/frontend/index.html" class="enlace-logo">
+                    <img src="/frontend/images/logo/LogoConNombre.png" alt="logo">
+                </a>
+                
+            </div> 
+            <nav class="navbar">
+                <div class="hamburger" onclick="this.classList.toggle('active');document.querySelector('.navbar ul').classList.toggle('show')">
+                    <span></span><span></span><span></span>
+                </div>
+                <ul>
+                    <li><a href="/frontend/index.html">INICIO</a></li>
+                    <li><a href="/frontend/pages/nosotros.html">NOSOTROS</a></li>
+                    <li><a href="/frontend/pages/habitaciones.html">HABITACIONES</a></li>
+                    <li><a href="/frontend/pages/servicios.html">SERVICIOS</a></li>
+                    <li><a href="/frontend/pages/galeria.html">GALERÍA</a></li>
+                    <li><a href="/frontend/pages/contactenos.html">CONTACTENOS</a></li>
+                    <li><button class="btn-reserva" onclick="window.location.href=window.location.href='/frontend/pages/reserva.html' ">RESERVA</button></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    
+    <main>
+        <section id="galeria">
+            <h2>Despierta en el corazón de Casa Murano</h2>
+            <h3>Galería</h3>
+            <div class="gallery-grid">
+                <img src="/frontend/images/contenido/1.jpg" alt="1" onclick="abrirImagen(this.src)">
+                <img src="/frontend/images/contenido/2.jpg" alt="2" onclick="abrirImagen(this.src)">
+                <img src="/frontend/images/contenido/3.jpg" alt="3" onclick="abrirImagen(this.src)">
+                <img src="/frontend/images/contenido/4.jpg" alt="4" onclick="abrirImagen(this.src)">
+                <img src="/frontend/images/contenido/5.jpg" alt="5" onclick="abrirImagen(this.src)">
+                <img src="/frontend/images/contenido/6.jpg" alt="6" onclick="abrirImagen(this.src)">
+            </div>
+        </section>
+
+        <div class="modal-overlay" id="modalGaleria">
+            <span class="modal-close">&times;</span>
+            <div class="modal-contenido">
+                <button class="modal-prev" id="modalPrev">&#10094;</button>
+                <div class="modal-imagen-wrapper">
+                    <img id="imagenGrande">
+                </div>
+                <button class="modal-next" id="modalNext">&#10095;</button>
+                <div class="modal-ribbon" id="modalRibbon"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Pie de página -->
+    <footer>
+        <div class="pie-pagina">
+            <div class="logo">
+                <a href="/frontend/index.html" class="enlace-logo">
+                    <img src="/frontend/images/logo/LogoConNombre.png" alt="logo">
+                </a>
+            </div>
+        
+            <div class="pie">
+                <div class="redes-sociales">
+                    <h4>SIGUENOS</h4>
+                    <div class="contenedor-iconos">
+                        <a href="https://www.facebook.com/hotelcasamuraneivahuila/" target="_blank" class="icono-social">
+                            <img src="/frontend/images/social/Facebook Icon.png" alt="Facebook">
+                        </a>
+
+                        <a href="https://www.instagram.com/p/DXMbZM8kbkD/" target="_blank" class="icono-social">
+                            <img src="/frontend/images/social/Instagram.png" alt="Instagram">
+                        </a>
+                    </div>      
+                </div>
+                <div class="copyrith">
+                    <p>&copy; Este proyecto fue desarrollado por TecnoParque Nodo Neiva - SENA - CIES Regional Huila</p>
+                </div>
+            </div>
+        
+            <div class="informacion">
+                <div class="info-item1">
+                    <h4>DIRECCIÓN:</h4><P>Avenida Circunvalar No 6 -32,</P><br><br>
+                </div>
+                <div class="info-item2">
+                    <h4>EMAIL:</h4><P>hotelcasamuranoneivahuila@hotmail.com</P><br>
+                </div>
+                <div class="info-item3">
+                    <h4>TELEFONO:</h4><P>3144785524</P><br><br>
+                </div>
+                
+            </div>
+        </div>
+        
+
+        <script>
+            document.getElementById('adminBtn').addEventListener('click', () => {
+            // Esto redirige automáticamente a la página de login
+            window.location.href = '/frontend/pages/login.html';
+        });;
+        </script>   
+        
+    </footer>
+
+    <!-- Aquí enlazarás tu archivo JS -->
+    <a href="https://wa.me/573144785524" target="_blank" class="whatsapp-float" aria-label="WhatsApp">
+        <img src="/frontend/images/social/WhatsApp.png" alt="WhatsApp">
+    </a>
+    <script src="/frontend/js/galeria.js"></script>
+</body>
+</html>

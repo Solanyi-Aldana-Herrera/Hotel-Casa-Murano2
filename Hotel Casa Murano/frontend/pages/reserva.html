@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"> 
+    <title>Hotel Casa Murano</title>
+    
+    <link rel="icon" href="/frontend/images/logo/favicon.png" type="image/png" sizes="16x16">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Forum&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/css/base.css">
+    <link rel="stylesheet" href="/frontend/css/layout.css">
+    <link rel="stylesheet" href="/frontend/css/components.css">
+    <link rel="stylesheet" href="/frontend/css/pages/reserva.css">
+</head>
+<body>
+
+
+    <!-- Navegador-Menu -->
+    <header>
+        <div class="navegador">
+             
+            <nav class="navbar">
+                <div class="logo">
+                    <img src="/frontend/images/logo/LogoConNombre.png" alt="logo">
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#habitaciones">Selecciona la habitación</a></li>
+                    <li><a href="#datos">Digita tus datos</a></li>
+                    <li><a href="#confirmacion">Confirma tu reserva</a></li>
+                    <button class="btn-salir" onclick="window.location.href='/frontend/index.html'">Salir</button> 
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    
+    <!-- Sección principal -->
+    <main>
+
+        <!-- SECCIÓN 1: SELECCIÓN DE HABITACIÓN -->
+        <section id="habitacion-detalle-reserva">
+            <div class="reserva">
+                <div class="reserva-box">
+                    <div class="fechas-container">
+                        <div class="campo" onclick="document.getElementById('rva-input-entrada').showPicker()">
+                            <span class="label-reserva">Entrada</span>
+                            <div class="fecha-display">
+                                <p id="rva-dia-entrada"></p>
+                                <span id="rva-mes-entrada"></span>
+                            </div>
+                            <input type="date" id="rva-input-entrada" class="input-invisible">
+                        </div>
+                        <div class="campo" onclick="document.getElementById('rva-input-salida').showPicker()">
+                            <span class="label-reserva">Salida</span>
+                            <div class="fecha-display">
+                                <p id="rva-dia-salida"></p>
+                                <span id="rva-mes-salida"></span>
+                            </div>
+                            <input type="date" id="rva-input-salida" class="input-invisible">
+                        </div>
+                    </div>
+                    <div class="campo">
+                        <div class="ocupacion-bloque">
+                            <span class="label-reserva">Ocupación</span>
+                            <div class="ocupacion-selector" onclick="toggleRvaOcupacion()">
+                                <div class="icon-group">
+                                    <div class="icon-wrapper">
+                                        <img src="/frontend/images/iconos/Adulto.png" alt="Adulto"> 
+                                    </div>
+                                    <span id="rva-num-adultos">1</span>
+                                    <div class="icon-wrapper">
+                                        <img src="/frontend/images/iconos/Niño.png" alt="Niño"> 
+                                    </div>
+                                    <span id="rva-num-ninos">1</span>
+                                </div>
+                            </div>
+                            <div class="ocupacion-dropdown" id="rva-dropdown-ocupacion">
+                                <div class="control-pasajero">
+                                    <span>Adultos</span>
+                                    <input type="number" id="rva-cant-adultos" value="1" min="1" oninput="actualizarRvaOcupacion()">
+                                </div>
+                                <div class="control-pasajero">
+                                    <span>Niños</span>
+                                    <input type="number" id="rva-cant-ninos" value="1" min="0" oninput="actualizarRvaOcupacion()">
+                                </div>
+                                <button class="btn-listo" onclick="toggleRvaOcupacion()">Listo</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="reserva-contenedor">
+                <h2 class="reserva-titulo">Selecciona tu habitación</h2>
+                <div id="lista-habitaciones" class="lista-habitaciones"></div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: DIGITACIÓN DE DATOS -->
+        <section id="digitacion-datos">
+            <div class="reserva-contenedor">
+                <h2 class="reserva-titulo">Digita tus datos</h2>
+                <form id="form-datos" class="form-datos">
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="nombres">Nombres</label>
+                            <input type="text" id="nombres" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="apellidos">Apellidos</label>
+                            <input type="text" id="apellidos" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="tipo-documento">Tipo de documento</label>
+                            <select id="tipo-documento" required>
+                                <option value="">Seleccione...</option>
+                                <option value="CC">Cédula de Ciudadanía</option>
+                                <option value="CE">Cédula de Extranjería</option>
+                                <option value="NIT">NIT</option>
+                                <option value="Pasaporte">Pasaporte</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label for="num-documento">Número de documento</label>
+                            <input type="text" id="num-documento" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="celular">Celular</label>
+                            <input type="tel" id="celular" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="fecha-nacimiento">Fecha de nacimiento (DD - MM - YY)</label>
+                            <input type="date" id="fecha-nacimiento" required>
+                        </div>
+                        <div class="form-field"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field form-field-full">
+                            <label for="comentario">Comentario / Novedad</label>
+                            <textarea id="comentario" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-siguiente" id="btn-siguiente">Siguiente</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: RESUMEN DE RESERVA -->
+        <section id="resumen-reserva">
+            <div class="reserva-contenedor">
+                <h2 class="reserva-titulo">Confirma tu reserva</h2>
+                <div class="resumen-grid">
+                    <div class="resumen-col">
+                        <h3>Habitación</h3>
+                        <p id="resumen-habitacion">—</p>
+
+                        <h3>Fechas</h3>
+                        <p><strong>Entrada:</strong> <span id="resumen-entrada">—</span></p>
+                        <p><strong>Salida:</strong> <span id="resumen-salida">—</span></p>
+                        <p><strong>Noches:</strong> <span id="resumen-noches">—</span></p>
+
+                        <h3>Ocupación</h3>
+                        <p id="resumen-ocupacion">—</p>
+                    </div>
+                    <div class="resumen-col">
+                        <h3>Tus datos</h3>
+                        <p id="resumen-nombres">—</p>
+                        <p id="resumen-documento">—</p>
+                        <p id="resumen-celular">—</p>
+                        <p id="resumen-email">—</p>
+                        <p id="resumen-fecha-nac">—</p>
+
+                        <h3>Comentario</h3>
+                        <p id="resumen-comentario">—</p>
+                    </div>
+                    <div class="resumen-col resumen-total-col">
+                        <h3>Total</h3>
+                        <p class="resumen-precio" id="resumen-total">—</p>
+
+                        <label class="resumen-checkbox">
+                            <input type="checkbox" id="check-terminos">
+                            <span>Acepto las <a href="terminos.html" target="_blank">condiciones y políticas</a> de reserva del hotel</span>
+                        </label>
+
+                        <button class="btn-confirmar" id="btn-confirmar" disabled>Confirmar reserva</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- Pie de página -->
+    <footer>
+        <div class="pie-pagina">
+            <div class="logo">
+                <a href="/frontend/index.html" class="enlace-logo">
+                    <img src="/frontend/images/logo/LogoConNombre.png" alt="logo">
+                </a>
+            </div>
+        
+            <div class="pie">
+                <div class="redes-sociales">
+                    <h4>SIGUENOS</h4>
+                    <div class="contenedor-iconos">
+                        <a href="https://www.facebook.com/hotelcasamuraneivahuila/" target="_blank" class="icono-social">
+                            <img src="/frontend/images/social/Facebook Icon.png" alt="Facebook">
+                        </a>
+
+                        <a href="https://www.instagram.com/p/DXMbZM8kbkD/" target="_blank" class="icono-social">
+                            <img src="/frontend/images/social/Instagram.png" alt="Instagram">
+                        </a>
+                    </div>      
+                </div>
+                <div class="copyrith">
+                    <p>&copy; Este proyecto fue desarrollado por TecnoParque Nodo Neiva - SENA - CIES Regional Huila</p>
+                </div>
+            </div>
+        
+            <div class="informacion">
+                <div class="info-item1">
+                    <h4>DIRECCIÓN:</h4><P>Avenida Circunvalar No 6 -32,</P><br><br>
+                </div>
+                <div class="info-item2">
+                    <h4>EMAIL:</h4><P>hotelcasamuranoneivahuila@hotmail.com</P><br>
+                </div>
+                <div class="info-item3">
+                    <h4>TELEFONO:</h4><P>3144785524</P><br><br>
+                </div>
+                
+            </div>
+        </div>
+        
+
+        <script>
+            document.getElementById('adminBtn').addEventListener('click', () => {
+            // Esto redirige automáticamente a la página de login
+            window.location.href = '/frontend/pages/login.html';
+        });;
+        </script>   
+        
+    </footer>
+
+    <!-- Aquí enlazarás tu archivo JS -->
+    <script src="/frontend/js/reserva.js"></script>
+</body>
+</html>

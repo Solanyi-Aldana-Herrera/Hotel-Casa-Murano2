@@ -273,7 +273,7 @@ const TABLAS = {
     iconos_nosotros:      { insertar: ['nombre','icono','descripcion'] },
     informacion_contacto: { insertar: ['direccion','celular','email','mapa_iframe'] },
     mensajes_contacto:    { insertar: ['nombre','correo','telefono','asunto','mensaje','leido'] },
-    nosotros:             { insertar: ['titulo','descripcion','imagen'] },
+    nosotros:             { insertar: ['titulo','subtitulo','descripcion','imagen','mision','mision_imagen','vision','vision_imagen','valores','valores_imagen'] },
     servicios:            { insertar: ['nombre','descripcion','imagen'] },
     slider_inicio:        { insertar: ['titulo','descripcion','imagen','orden_slider','activo'] }
 };

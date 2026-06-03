@@ -104,6 +104,18 @@ async function guardarBienvenida() {
   }
 
   toast('Bienvenida guardada', 'exito');
+  limpiarFormularioBienvenida();
+}
+
+function limpiarFormularioBienvenida() {
+  document.getElementById('bienvenida-titulo').value = '';
+  document.getElementById('bienvenida-subtitulo').value = '';
+  document.getElementById('bienvenida-descripcion').value = '';
+  document.getElementById('bienvenida-despedida').value = '';
+  removerBienvenidaImg();
+  for (let i = 1; i <= 5; i++) {
+    removerCarruselImg(i);
+  }
 }
 
 // ============================================================

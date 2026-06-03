@@ -7,23 +7,52 @@ async function cargarNosotros() {
   if (res.success && res.datos.length > 0) {
     const d = res.datos[0];
     document.getElementById('nosotros-titulo').value = d.titulo || '';
+    document.getElementById('nosotros-subtitulo').value = d.subtitulo || '';
     document.getElementById('nosotros-descripcion').value = d.descripcion || '';
     document.getElementById('nosotros-imagen').value = d.imagen || '';
-    if (d.imagen) {
-      document.getElementById('nosotros-img-preview').style.display = 'flex';
-      document.getElementById('nosotros-img-preview').querySelector('img').src = d.imagen;
-      document.getElementById('nosotros-img-nombre').textContent = d.imagen.split('/').pop();
-    }
+    document.getElementById('nosotros-mision').value = d.mision || '';
+    document.getElementById('nosotros-mision-imagen').value = d.mision_imagen || '';
+    document.getElementById('nosotros-vision').value = d.vision || '';
+    document.getElementById('nosotros-vision-imagen').value = d.vision_imagen || '';
+    document.getElementById('nosotros-valores').value = d.valores || '';
+    document.getElementById('nosotros-valores-imagen').value = d.valores_imagen || '';
+
+    mostrarPreviewImg('nosotros-img-preview', 'nosotros-img-nombre', d.imagen);
+    mostrarPreviewImg('nosotros-mision-preview', 'nosotros-mision-nombre', d.mision_imagen);
+    mostrarPreviewImg('nosotros-vision-preview', 'nosotros-vision-nombre', d.vision_imagen);
+    mostrarPreviewImg('nosotros-valores-preview', 'nosotros-valores-nombre', d.valores_imagen);
   }
   configurarUpload('nosotros-img-input', 'nosotros-img-preview', 'nosotros-img-nombre', 'nosotros-imagen');
+  configurarUpload('nosotros-mision-input', 'nosotros-mision-preview', 'nosotros-mision-nombre', 'nosotros-mision-imagen');
+  configurarUpload('nosotros-vision-input', 'nosotros-vision-preview', 'nosotros-vision-nombre', 'nosotros-vision-imagen');
+  configurarUpload('nosotros-valores-input', 'nosotros-valores-preview', 'nosotros-valores-nombre', 'nosotros-valores-imagen');
+}
+
+function mostrarPreviewImg(previewId, nombreId, url) {
+  if (!url) return;
+  const preview = document.getElementById(previewId);
+  const nombreEl = document.getElementById(nombreId);
+  if (preview) {
+    preview.style.display = 'flex';
+    preview.querySelector('img').src = url;
+  }
+  if (nombreEl) nombreEl.textContent = url.split('/').pop();
 }
 
 async function guardarNosotros() {
   const data = {
     titulo: document.getElementById('nosotros-titulo').value,
+    subtitulo: document.getElementById('nosotros-subtitulo').value,
     descripcion: document.getElementById('nosotros-descripcion').value,
-    imagen: document.getElementById('nosotros-imagen').value
+    imagen: document.getElementById('nosotros-imagen').value,
+    mision: document.getElementById('nosotros-mision').value,
+    mision_imagen: document.getElementById('nosotros-mision-imagen').value,
+    vision: document.getElementById('nosotros-vision').value,
+    vision_imagen: document.getElementById('nosotros-vision-imagen').value,
+    valores: document.getElementById('nosotros-valores').value,
+    valores_imagen: document.getElementById('nosotros-valores-imagen').value
   };
+
   const res = await apiGet('nosotros');
   let r;
   if (res.success && res.datos.length > 0) {
@@ -31,89 +60,39 @@ async function guardarNosotros() {
   } else {
     r = await apiPost('nosotros', data);
   }
-  if (r.success) toast('Información guardada', 'exito');
-  else toast('Error al guardar', 'error');
-}
-
-// ============================================================
-// NOSOTROS — ICONOS
-// ============================================================
-
-async function cargarIconos() {
-  const lista = document.getElementById('iconos-lista');
-  mostrarCargando(lista);
-  const res = await apiGet('iconos_nosotros');
-  if (!res.success || res.datos.length === 0) {
-    lista.innerHTML = '<div class="msj-vacio"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg><p>Sin iconos registrados</p></div>';
-    return;
-  }
-  lista.innerHTML = res.datos.map(i => `
-    <div class="admin-card">
-      <div class="card-body">
-        <h3>${i.nombre || '—'}</h3>
-        <p><strong>Icono:</strong> ${i.icono || '—'}</p>
-        <p>${i.descripcion || ''}</p>
-      </div>
-      <div class="card-acciones">
-        <button class="btn-accion editar" onclick="editarIcono(${i.id})" title="Editar">
-          <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-        </button>
-        <button class="btn-accion eliminar" onclick="eliminarIcono(${i.id})" title="Eliminar">
-          <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-        </button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function abrirFormIcono(data) {
-  document.getElementById('form-icono').style.display = 'block';
-  if (data) {
-    document.getElementById('icono-form-titulo').textContent = 'Editar Icono';
-    document.getElementById('icono-id').value = data.id;
-    document.getElementById('icono-nombre').value = data.nombre || '';
-    document.getElementById('icono-icono').value = data.icono || '';
-    document.getElementById('icono-descripcion').value = data.descripcion || '';
+  if (r.success) {
+    toast('Información guardada', 'exito');
+    limpiarFormularioNosotros();
   } else {
-    document.getElementById('icono-form-titulo').textContent = 'Nuevo Icono';
-    document.getElementById('icono-id').value = '';
-    document.getElementById('icono-nombre').value = '';
-    document.getElementById('icono-icono').value = '';
-    document.getElementById('icono-descripcion').value = '';
+    toast('Error al guardar', 'error');
   }
-  document.getElementById('form-icono').scrollIntoView({ behavior: 'smooth' });
 }
 
-function cerrarFormIcono() {
-  document.getElementById('form-icono').style.display = 'none';
+function removerNosotrosImg(tipo) {
+  const preview = document.getElementById('nosotros-' + tipo + '-preview');
+  const nombreEl = document.getElementById('nosotros-' + tipo + '-nombre');
+  const hiddenId = tipo === 'img' ? 'nosotros-imagen' : 'nosotros-' + tipo + '-imagen';
+  const hidden = document.getElementById(hiddenId);
+  const input = document.getElementById('nosotros-' + tipo + '-input');
+
+  if (preview) { preview.style.display = 'none'; preview.querySelector('img').src = ''; }
+  if (nombreEl) nombreEl.textContent = '';
+  if (hidden) hidden.value = '';
+  if (input) input.value = '';
 }
 
-async function guardarIcono() {
-  const id = document.getElementById('icono-id').value;
-  const data = {
-    nombre: document.getElementById('icono-nombre').value,
-    icono: document.getElementById('icono-icono').value,
-    descripcion: document.getElementById('icono-descripcion').value
-  };
-  if (!data.nombre) { toast('El nombre es requerido', 'error'); return; }
-  const r = id ? await apiPut('iconos_nosotros', id, data) : await apiPost('iconos_nosotros', data);
-  if (r.success) { toast('Icono guardado', 'exito'); cerrarFormIcono(); cargarIconos(); }
-  else toast('Error al guardar', 'error');
-}
-
-async function editarIcono(id) {
-  const res = await apiGet('iconos_nosotros', id);
-  if (res.success) abrirFormIcono(res.dato);
-}
-
-function eliminarIcono(id) {
-  abrirModalConfirmar('¿Eliminar este icono?', async () => {
-    const r = await apiDelete('iconos_nosotros', id);
-    if (r.success) { toast('Icono eliminado', 'exito'); cargarIconos(); }
-    else toast('Error al eliminar', 'error');
-  });
+function limpiarFormularioNosotros() {
+  document.getElementById('nosotros-titulo').value = '';
+  document.getElementById('nosotros-subtitulo').value = '';
+  document.getElementById('nosotros-descripcion').value = '';
+  document.getElementById('nosotros-mision').value = '';
+  document.getElementById('nosotros-vision').value = '';
+  document.getElementById('nosotros-valores').value = '';
+  removerNosotrosImg('img');
+  removerNosotrosImg('mision');
+  removerNosotrosImg('vision');
+  removerNosotrosImg('valores');
 }
 
 // Init
 cargarNosotros();
-cargarIconos();

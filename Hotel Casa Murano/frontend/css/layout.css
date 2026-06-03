@@ -205,7 +205,6 @@ header {
   .navbar ul {
     display: none;
     flex-direction: column;
-    position: absolute;
     top: 115px;
     left: 0;
     width: 100%;

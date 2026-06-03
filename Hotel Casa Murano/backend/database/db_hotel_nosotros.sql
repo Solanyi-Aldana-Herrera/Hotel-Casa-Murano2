@@ -33,8 +33,15 @@ DROP TABLE IF EXISTS `nosotros`;
 CREATE TABLE `nosotros` (
   `id` int NOT NULL AUTO_INCREMENT,
   `titulo` varchar(150) DEFAULT NULL,
+  `subtitulo` varchar(150) DEFAULT NULL,
   `descripcion` text,
   `imagen` varchar(255) DEFAULT NULL,
+  `mision` text,
+  `mision_imagen` varchar(255) DEFAULT NULL,
+  `vision` text,
+  `vision_imagen` varchar(255) DEFAULT NULL,
+  `valores` text,
+  `valores_imagen` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -59,3 +66,15 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2026-05-21 15:45:33
+
+-- ============================================================
+-- Migración: Agregar columnas faltantes para el formulario completo
+-- ============================================================
+ALTER TABLE `nosotros`
+  ADD COLUMN `subtitulo` VARCHAR(150) DEFAULT NULL AFTER `titulo`,
+  ADD COLUMN `mision` TEXT DEFAULT NULL AFTER `imagen`,
+  ADD COLUMN `mision_imagen` VARCHAR(255) DEFAULT NULL AFTER `mision`,
+  ADD COLUMN `vision` TEXT DEFAULT NULL AFTER `mision_imagen`,
+  ADD COLUMN `vision_imagen` VARCHAR(255) DEFAULT NULL AFTER `vision`,
+  ADD COLUMN `valores` TEXT DEFAULT NULL AFTER `vision_imagen`,
+  ADD COLUMN `valores_imagen` VARCHAR(255) DEFAULT NULL AFTER `valores`;

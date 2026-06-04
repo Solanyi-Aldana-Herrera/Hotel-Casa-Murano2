@@ -1,50 +1,67 @@
 // ============================================================
-// INICIO — BIENVENIDA
+// INICIO — BIENVENIDA (CRUD)
 // ============================================================
 
 async function cargarBienvenida() {
+  const tbody = document.getElementById('bienvenida-body');
+  if (!tbody) { console.error('No se encontró el elemento bienvenida-body'); return; }
+  tbody.innerHTML = '<tr><td colspan="6" class="vacio">Cargando...</td></tr>';
   const res = await apiGet('bienvenida');
-  if (res.success && res.datos.length > 0) {
-    const d = res.datos[0];
-    document.getElementById('bienvenida-titulo').value = d.titulo || '';
-    document.getElementById('bienvenida-subtitulo').value = d.subtitulo || '';
-    document.getElementById('bienvenida-descripcion').value = d.descripcion || '';
-    document.getElementById('bienvenida-despedida').value = d.despedida || '';
-    document.getElementById('bienvenida-imagen').value = d.imagen || '';
-    if (d.imagen) {
-      const p = document.getElementById('bienvenida-img-preview');
-      p.style.display = 'flex';
-      p.querySelector('img').src = d.imagen;
-      document.getElementById('bienvenida-img-nombre').textContent = d.imagen.split('/').pop();
-    }
-  }
+  if (!res.success) { tbody.innerHTML = '<tr><td colspan="6" class="vacio">Error al cargar</td></tr>'; return; }
+  if (res.datos.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="vacio">Sin datos</td></tr>'; return; }
+  tbody.innerHTML = res.datos.map(d => `
+    <tr>
+      <td>${d.imagen ? `<img src="${d.imagen}" class="imagen-tabla">` : '—'}</td>
+      <td>${d.titulo || '—'}</td>
+      <td>${d.subtitulo || '—'}</td>
+      <td>${d.descripcion ? d.descripcion.substring(0, 80) + (d.descripcion.length > 80 ? '...' : '') : '—'}</td>
+      <td>${d.despedida || '—'}</td>
+      <td class="td-acciones">
+        <div class="acciones">
+          <button class="btn-accion editar" onclick="editarBienvenida(${d.id})" title="Editar">
+            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+          </button>
+          <button class="btn-accion eliminar" onclick="eliminarBienvenida(${d.id})" title="Eliminar">
+            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
   configurarUpload('bienvenida-img-input', 'bienvenida-img-preview', 'bienvenida-img-nombre', 'bienvenida-imagen');
-  configurarCarrusel();
+}
 
-  // Cargar imágenes existentes del carrusel
-  const slidesRes = await apiGet('slider_inicio');
-  if (slidesRes.success && slidesRes.datos.length > 0) {
-    const activos = slidesRes.datos
-      .filter(s => s.activo)
-      .sort((a, b) => (a.orden_slider || 0) - (b.orden_slider || 0));
-    activos.forEach(s => {
-      const pos = s.orden_slider;
-      if (pos >= 1 && pos <= 5) {
-        const preview = document.getElementById('carrusel-preview-' + pos);
-        const nombreEl = document.getElementById('carrusel-nombre-' + pos);
-        const hidden = document.getElementById('carrusel-imagen-' + pos);
-        if (preview && s.imagen) {
-          preview.style.display = 'flex';
-          preview.querySelector('img').src = s.imagen;
-          nombreEl.textContent = s.imagen.split('/').pop();
-          hidden.value = s.imagen;
-        }
-      }
-    });
+function abrirFormBienvenida(data) {
+  const form = document.getElementById('form-bienvenida');
+  form.style.display = 'block';
+  if (data) {
+    document.getElementById('bienvenida-form-titulo').textContent = 'Editar Bienvenida';
+    document.getElementById('bienvenida-id').value = data.id;
+    document.getElementById('bienvenida-titulo').value = data.titulo || '';
+    document.getElementById('bienvenida-subtitulo').value = data.subtitulo || '';
+    document.getElementById('bienvenida-descripcion').value = data.descripcion || '';
+    document.getElementById('bienvenida-despedida').value = data.despedida || '';
+    document.getElementById('bienvenida-imagen').value = data.imagen || '';
+    if (data.imagen) {
+      const preview = document.getElementById('bienvenida-img-preview');
+      preview.style.display = 'flex';
+      preview.querySelector('img').src = data.imagen;
+      document.getElementById('bienvenida-img-nombre').textContent = data.imagen.split('/').pop();
+    }
+  } else {
+    document.getElementById('bienvenida-form-titulo').textContent = 'Nueva Bienvenida';
+    document.getElementById('bienvenida-id').value = '';
+    limpiarFormBienvenida();
   }
+  form.scrollIntoView({ behavior: 'smooth' });
+}
+
+function cerrarFormBienvenida() {
+  document.getElementById('form-bienvenida').style.display = 'none';
 }
 
 async function guardarBienvenida() {
+  const id = document.getElementById('bienvenida-id').value;
   const data = {
     titulo: document.getElementById('bienvenida-titulo').value,
     subtitulo: document.getElementById('bienvenida-subtitulo').value,
@@ -52,137 +69,24 @@ async function guardarBienvenida() {
     despedida: document.getElementById('bienvenida-despedida').value,
     imagen: document.getElementById('bienvenida-imagen').value
   };
-
-  const res = await apiGet('bienvenida');
-  let r;
-  if (res.success && res.datos.length > 0) {
-    r = await apiPut('bienvenida', res.datos[0].id, data);
-  } else {
-    r = await apiPost('bienvenida', data);
-  }
-  if (!r.success) { toast('Error al guardar bienvenida', 'error'); return; }
-
-  // Eliminar todos los registros existentes del slider
-  const slidesRes = await apiGet('slider_inicio');
-  const existingSlides = slidesRes.success ? slidesRes.datos : [];
-
-  if (existingSlides.length > 0) {
-    for (const slide of existingSlides) {
-      await apiDelete('slider_inicio', slide.id);
-    }
-  }
-
-  // Procesar cada slot del carrusel (1-5)
-  const slidesToSave = [];
-  for (let i = 1; i <= 5; i++) {
-    const fileInput = document.getElementById('carrusel-input-' + i);
-    const hiddenInput = document.getElementById('carrusel-imagen-' + i);
-    const file = fileInput ? fileInput.files[0] : null;
-
-    if (file) {
-      // Nueva imagen seleccionada — subir al servidor
-      const uploadRes = await subirArchivo(file);
-      if (uploadRes.success) {
-        slidesToSave.push({ imagen: uploadRes.ruta, orden_slider: i });
-      }
-    } else if (hiddenInput && hiddenInput.value) {
-      // Imagen existente conservada
-      slidesToSave.push({ imagen: hiddenInput.value, orden_slider: i });
-    }
-    // Si no hay ni archivo ni valor oculto, no se guarda nada para esta posición
-  }
-
-  // Crear nuevos registros solo para las posiciones con imagen
-  for (const slide of slidesToSave) {
-    await apiPost('slider_inicio', {
-      titulo: '',
-      descripcion: '',
-      imagen: slide.imagen,
-      orden_slider: slide.orden_slider,
-      activo: 1
-    });
-  }
-
-  toast('Bienvenida guardada', 'exito');
-  limpiarFormularioBienvenida();
+  const r = id ? await apiPut('bienvenida', id, data) : await apiPost('bienvenida', data);
+  if (r.success) { toast('Bienvenida guardada', 'exito'); cerrarFormBienvenida(); cargarBienvenida(); }
+  else toast('Error al guardar', 'error');
 }
 
-function limpiarFormularioBienvenida() {
+function limpiarFormBienvenida() {
   document.getElementById('bienvenida-titulo').value = '';
   document.getElementById('bienvenida-subtitulo').value = '';
   document.getElementById('bienvenida-descripcion').value = '';
   document.getElementById('bienvenida-despedida').value = '';
   removerBienvenidaImg();
-  for (let i = 1; i <= 5; i++) {
-    removerCarruselImg(i);
-  }
 }
-
-// ============================================================
-// CARRUSEL — CONFIGURACIÓN INDIVIDUAL POR SLOT
-// ============================================================
-
-function configurarCarrusel() {
-  for (let i = 1; i <= 5; i++) {
-    const input = document.getElementById('carrusel-input-' + i);
-    if (!input) continue;
-
-    const nuevoInput = input.cloneNode(true);
-    input.parentNode.replaceChild(nuevoInput, input);
-
-    // Usar closure para capturar el índice correcto
-    nuevoInput.addEventListener('change', function(idx) {
-      return function () {
-        const file = this.files[0];
-        if (!file) return;
-
-        const preview = document.getElementById('carrusel-preview-' + idx);
-        const nombreEl = document.getElementById('carrusel-nombre-' + idx);
-        const hidden = document.getElementById('carrusel-imagen-' + idx);
-
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          preview.style.display = 'flex';
-          preview.querySelector('img').src = e.target.result;
-          nombreEl.textContent = file.name;
-          // Limpiar el hidden al seleccionar una nueva imagen
-          hidden.value = '';
-        };
-        reader.readAsDataURL(file);
-      };
-    }(i));
-  }
-}
-
-// ============================================================
-// CARRUSEL — QUITAR IMAGEN
-// ============================================================
-
-function removerCarruselImg(pos) {
-  const preview = document.getElementById('carrusel-preview-' + pos);
-  const nombreEl = document.getElementById('carrusel-nombre-' + pos);
-  const hidden = document.getElementById('carrusel-imagen-' + pos);
-  const input = document.getElementById('carrusel-input-' + pos);
-
-  if (preview) {
-    preview.style.display = 'none';
-    preview.querySelector('img').src = '';
-  }
-  if (nombreEl) nombreEl.textContent = '';
-  if (hidden) hidden.value = '';
-  if (input) input.value = '';
-}
-
-// ============================================================
-// BIENVENIDA — QUITAR IMAGEN
-// ============================================================
 
 function removerBienvenidaImg() {
   const preview = document.getElementById('bienvenida-img-preview');
   const nombreEl = document.getElementById('bienvenida-img-nombre');
   const hidden = document.getElementById('bienvenida-imagen');
   const input = document.getElementById('bienvenida-img-input');
-
   if (preview) {
     preview.style.display = 'none';
     preview.querySelector('img').src = '';
@@ -190,6 +94,19 @@ function removerBienvenidaImg() {
   if (nombreEl) nombreEl.textContent = '';
   if (hidden) hidden.value = '';
   if (input) input.value = '';
+}
+
+async function editarBienvenida(id) {
+  const res = await apiGet('bienvenida', id);
+  if (res.success) abrirFormBienvenida(res.dato);
+}
+
+function eliminarBienvenida(id) {
+  abrirModalConfirmar('¿Eliminar esta bienvenida?', async () => {
+    const r = await apiDelete('bienvenida', id);
+    if (r.success) { toast('Bienvenida eliminada', 'exito'); cargarBienvenida(); }
+    else toast('Error al eliminar', 'error');
+  });
 }
 
 // Init

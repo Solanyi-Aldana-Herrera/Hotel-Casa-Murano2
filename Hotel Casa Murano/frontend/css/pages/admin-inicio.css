@@ -57,3 +57,62 @@
 #inicio .carrusel-item .upload-preview .info p {
   font-size: 0.7rem;
 }
+
+/* =========================
+   LAYOUT BIENVENIDA (2 columnas)
+   ========================= */
+
+.bienvenida-layout {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.bienvenida-campos {
+  flex: 1;
+  min-width: 0;
+}
+
+.bienvenida-imagen {
+  width: 500px;
+  flex-shrink: 0;
+}
+
+.bienvenida-imagen .upload-area {
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.bienvenida-imagen .upload-preview {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.bienvenida-imagen .upload-preview img {
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.bienvenida-imagen .upload-preview .info {
+  text-align: center;
+}
+
+.bienvenida-imagen .upload-preview .info p {
+  font-size: 0.85rem;
+  word-break: break-all;
+}
+
+@media (max-width: 992px) {
+  .bienvenida-layout {
+    flex-direction: column;
+  }
+  .bienvenida-imagen {
+    width: 100%;
+  }
+}

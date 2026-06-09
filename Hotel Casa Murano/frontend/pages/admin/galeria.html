@@ -1,37 +1,120 @@
-<link rel="stylesheet" href="/frontend/css/pages/admin-galeria.css">
-<section id="galeria" class="seccion-admin active">
-    <h1>Administrar Galería</h1>
-    <p class="descripcion-seccion">Sube y elimina imágenes de la galería del hotel.</p>
+<style>
+    .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    .preview-item {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        aspect-ratio: 16 / 9;
+        background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.08);
+        max-width: 200px;
+    }
+    .preview-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .btn-remove-img {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: rgba(231, 76, 60, 0.9);
+        color: white;
+        border: none;
+        font-size: 0.75rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+        line-height: 1;
+    }
+    .btn-remove-img:hover {
+        background: #e74c3c;
+        transform: scale(1.1);
+    }
+    .eliminar-lista {
+        margin-top: 1.5rem;
+        display: none;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    .eliminar-lista.mostrar {
+        display: grid;
+    }
+    .eliminar-item {
+        background: rgba(0,0,0,0.2);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 8px;
+        padding: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .eliminar-item img {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+        border-radius: 6px;
+    }
+    .btn-eliminar-item {
+        background: rgba(231,76,60,0.9);
+        color: white;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-family: var(--font-body);
+        font-size: 0.85rem;
+        transition: var(--transition);
+        white-space: nowrap;
+        width: 100%;
+    }
+    .btn-eliminar-item:hover {
+        background: #e74c3c;
+    }
+    .form-galeria {
+        display: none;
+    }
+    .form-galeria.mostrar {
+        display: block;
+    }
+</style>
 
-    <div class="admin-form">
-        <h2>Subir nueva imagen</h2>
+<div data-seccion="galeria">
+    <h2>Galería</h2>
+
+    <div class="admin-actions" style="justify-content: flex-start;">
+        <button class="btn-guardar" id="btn-anadir">Añadir</button>
+        <button class="btn-eliminar" id="btn-eliminar">Eliminar</button>
+    </div>
+
+    <div class="admin-form form-galeria" id="form-galeria">
+        <h3>Imagen</h3>
+
         <div class="admin-form-group">
-            <label>Título de la imagen</label>
-            <input type="text" id="galeria-titulo" placeholder="Ej: Piscina al atardecer">
-        </div>
-        <div class="admin-form-group">
-            <label>Imagen <span class="req">*</span></label>
-            <div class="upload-area" id="galeria-upload-area" onclick="document.getElementById('galeria-img-input').click()">
-                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-                <p>Haz clic o arrastra una imagen aquí</p>
-                <span class="sub-texto">JPG, JPEG, PNG, WEBP</span>
-            </div>
-            <input type="file" id="galeria-img-input" accept="image/*" style="display:none">
-            <div class="upload-preview" id="galeria-img-preview" style="display:none">
-                <img src="" alt="preview">
-                <div class="info"><p id="galeria-img-nombre"></p></div>
+            <label>Imagen</label>
+            <div class="upload-area" id="galeria-upload-area">
+                <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                <span>Haz clic para seleccionar una imagen</span>
+                <input type="file" id="galeria-input" accept="image/*">
             </div>
         </div>
+        <div class="preview-grid" id="galeria-preview"></div>
+
         <div class="admin-actions">
-            <button class="btn-guardar" onclick="subirGaleria()">Subir Imagen</button>
+            <button class="btn-guardar" onclick="api_galeria.guardar()">Guardar</button>
         </div>
     </div>
 
-    <h2 style="font-family:var(--font-serif);font-size:1.4rem;color:#222;margin-top:30px">Imágenes subidas</h2>
-    <div class="admin-galeria-grid" id="galeria-grid">
-        <div class="msj-vacio" style="grid-column:1/-1">
-            <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-            <p>No hay imágenes en la galería</p>
-        </div>
-    </div>
-</section>
+    <div class="eliminar-lista" id="eliminar-lista"></div>
+</div>

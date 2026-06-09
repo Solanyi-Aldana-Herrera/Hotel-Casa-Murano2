@@ -1,104 +1,98 @@
-<link rel="stylesheet" href="/frontend/css/pages/admin-nosotros.css">
-<section id="nosotros" class="seccion-admin active">
-    <h1>Administrar Nosotros</h1>
-    <p class="descripcion-seccion">Modifica la información de la sección Nosotros.</p>
+<style>
+    [data-seccion="nosotros"] .admin-form textarea {
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 6px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(0,0,0,0.3);
+        color: var(--text-white);
+        font-family: var(--font-body);
+        font-size: 0.95rem;
+        resize: vertical;
+        min-height: 100px;
+        transition: var(--transition);
+    }
+    [data-seccion="nosotros"] .admin-form textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+    .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    .preview-item {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        aspect-ratio: 16 / 9;
+        background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.08);
+        max-width: 200px;
+    }
+    .preview-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>
 
-    <div class="admin-form" id="form-nosotros">
-        <h2>Información Principal</h2>
+<div data-seccion="nosotros">
+    <h2>Nosotros</h2>
 
-        <div class="admin-form-group">
-            <label>Título</label>
-            <input type="text" id="nosotros-titulo" placeholder="Título (ej: Conócenos)">
-        </div>
-
-        <div class="admin-form-group">
-            <label>Subtítulo</label>
-            <input type="text" id="nosotros-subtitulo" placeholder="Subtítulo (ej: Hotel Casa Murano)">
-        </div>
-
+    <div class="admin-form" id="form-mision">
+        <h3>Misión</h3>
         <div class="admin-form-group">
             <label>Descripción</label>
-            <textarea id="nosotros-descripcion" placeholder="Descripción del hotel" rows="4"></textarea>
+            <textarea id="mision-descripcion" placeholder="Ingrese la descripción de la misión"></textarea>
         </div>
-
         <div class="admin-form-group">
-            <label>Imagen principal</label>
-            <div class="upload-area" onclick="document.getElementById('nosotros-img-input').click()">
-                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-                <p>Haz clic para seleccionar imagen</p>
-                <span class="sub-texto">JPG, JPEG, PNG, WEBP</span>
-            </div>
-            <input type="file" id="nosotros-img-input" accept="image/*" style="display:none">
-            <div class="upload-preview" id="nosotros-img-preview" style="display:none">
-                <img src="" alt="preview">
-                <div class="info"><p id="nosotros-img-nombre"></p></div>
-                <button type="button" class="btn-remove-img" onclick="removerNosotrosImg('img')" title="Quitar imagen">&times;</button>
-            </div>
-            <input type="hidden" id="nosotros-imagen">
-        </div>
-
-        <h2 style="margin-top:30px">Misión, Visión y Valores</h2>
-
-        <div class="admin-form-group">
-            <label>Misión</label>
-            <textarea id="nosotros-mision" placeholder="Texto de la misión" rows="3"></textarea>
-            <div style="margin-top:10px">
-                <div class="upload-area" onclick="document.getElementById('nosotros-mision-input').click()">
-                    <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-                    <p>Haz clic para seleccionar imagen</p>
-                    <span class="sub-texto">JPG, JPEG, PNG, WEBP</span>
-                </div>
-                <input type="file" id="nosotros-mision-input" accept="image/*" style="display:none">
-                <div class="upload-preview" id="nosotros-mision-preview" style="display:none">
-                    <img src="" alt="preview">
-                    <div class="info"><p id="nosotros-mision-nombre"></p></div>
-                    <button type="button" class="btn-remove-img" onclick="removerNosotrosImg('mision')" title="Quitar imagen">&times;</button>
-                </div>
-                <input type="hidden" id="nosotros-mision-imagen">
+            <label>Imagen</label>
+            <div class="upload-area" id="mision-upload-area">
+                <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                <span>Haz clic para seleccionar una imagen</span>
+                <input type="file" id="mision-input" accept="image/*">
             </div>
         </div>
-
-        <div class="admin-form-group">
-            <label>Visión</label>
-            <textarea id="nosotros-vision" placeholder="Texto de la visión" rows="3"></textarea>
-            <div style="margin-top:10px">
-                <div class="upload-area" onclick="document.getElementById('nosotros-vision-input').click()">
-                    <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-                    <p>Haz clic para seleccionar imagen</p>
-                    <span class="sub-texto">JPG, JPEG, PNG, WEBP</span>
-                </div>
-                <input type="file" id="nosotros-vision-input" accept="image/*" style="display:none">
-                <div class="upload-preview" id="nosotros-vision-preview" style="display:none">
-                    <img src="" alt="preview">
-                    <div class="info"><p id="nosotros-vision-nombre"></p></div>
-                    <button type="button" class="btn-remove-img" onclick="removerNosotrosImg('vision')" title="Quitar imagen">&times;</button>
-                </div>
-                <input type="hidden" id="nosotros-vision-imagen">
-            </div>
-        </div>
-
-        <div class="admin-form-group">
-            <label>Valores</label>
-            <textarea id="nosotros-valores" placeholder="Texto de los valores" rows="3"></textarea>
-            <div style="margin-top:10px">
-                <div class="upload-area" onclick="document.getElementById('nosotros-valores-input').click()">
-                    <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-                    <p>Haz clic para seleccionar imagen</p>
-                    <span class="sub-texto">JPG, JPEG, PNG, WEBP</span>
-                </div>
-                <input type="file" id="nosotros-valores-input" accept="image/*" style="display:none">
-                <div class="upload-preview" id="nosotros-valores-preview" style="display:none">
-                    <img src="" alt="preview">
-                    <div class="info"><p id="nosotros-valores-nombre"></p></div>
-                    <button type="button" class="btn-remove-img" onclick="removerNosotrosImg('valores')" title="Quitar imagen">&times;</button>
-                </div>
-                <input type="hidden" id="nosotros-valores-imagen">
-            </div>
-        </div>
-
-        <div class="admin-actions">
-            <button class="btn-guardar" onclick="guardarNosotros()">Guardar</button>
-        </div>
+        <div class="preview-grid" id="mision-preview"></div>
     </div>
 
-</section>
+    <div class="admin-form" id="form-vision">
+        <h3>Visión</h3>
+        <div class="admin-form-group">
+            <label>Descripción</label>
+            <textarea id="vision-descripcion" placeholder="Ingrese la descripción de la visión"></textarea>
+        </div>
+        <div class="admin-form-group">
+            <label>Imagen</label>
+            <div class="upload-area" id="vision-upload-area">
+                <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                <span>Haz clic para seleccionar una imagen</span>
+                <input type="file" id="vision-input" accept="image/*">
+            </div>
+        </div>
+        <div class="preview-grid" id="vision-preview"></div>
+    </div>
+
+    <div class="admin-form" id="form-valores">
+        <h3>Valores</h3>
+        <div class="admin-form-group">
+            <label>Descripción</label>
+            <textarea id="valores-descripcion" placeholder="Ingrese la descripción de los valores"></textarea>
+        </div>
+        <div class="admin-form-group">
+            <label>Imagen</label>
+            <div class="upload-area" id="valores-upload-area">
+                <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                <span>Haz clic para seleccionar una imagen</span>
+                <input type="file" id="valores-input" accept="image/*">
+            </div>
+        </div>
+        <div class="preview-grid" id="valores-preview"></div>
+
+        <div class="admin-actions">
+            <button class="btn-guardar" onclick="api_nosotros.guardarTodo()">Guardar</button>
+        </div>
+    </div>
+</div>

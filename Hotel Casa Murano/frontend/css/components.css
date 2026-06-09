@@ -3,7 +3,7 @@
    ========================= */
 
 .btn-reserva {
-  background: var(--primary-light);
+  background: #27d0dc;
   color: var(--bg-dark-alt);
   font-family: var(--font-body);
   font-size: 22.3px;
@@ -21,7 +21,7 @@
 }
 
 .btn-reserva-home {
-  background: var(--primary-light);
+  background: #27d0dc;
   color: var(--bg-dark-alt);
   font-family: var(--font-body);
   font-size: 22.3px;
@@ -40,7 +40,7 @@
 
 .btn-listo {
   width: 100%;
-  background: var(--primary-light);
+  background: #27d0dc;
   border: none;
   padding: 8px;
   border-radius: 20px;
@@ -51,7 +51,7 @@
 }
 
 .btn-salir {
-  background: var(--primary-light);
+  background: #27d0dc;
   color: var(--text-white);
   border: none;
   padding: 10px 22px;
@@ -64,7 +64,7 @@
 }
 
 .btn-salir:hover {
-  background: var(--gold);
+  background: #ab9025;
 }
 
 .btn-salir:active {
@@ -319,7 +319,7 @@
 }
 
 .sidebar button:hover {
-  background: var(--gold);
+  background: #ab9025;
 }
 
 /* =========================
@@ -349,3 +349,33 @@
   border-radius: 50%;
   box-shadow: 0 4px 12px rgba(0,0,0,0.25);
 }
+
+@media (max-width: 768px) {
+  .whatsapp-float {
+    width: 72px;
+    height: 72px;
+    bottom: 100px;
+    right: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .whatsapp-float {
+    width: 56px;
+    height: 56px;
+    bottom: 80px;
+    right: 12px;
+  }
+}
+
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  textarea,
+  select {
+    font-size: 16px;
+  }
+
+

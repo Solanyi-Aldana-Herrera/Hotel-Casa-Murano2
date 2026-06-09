@@ -54,7 +54,7 @@
   content: url("/frontend/images/decoracion/linea.png");
   display: block;
   font-size: 30px;
-  color: var(--gold);
+  color: #ab9025;
   margin-top: 0;
   letter-spacing: 10px;
 }
@@ -62,7 +62,7 @@
 .información-contacto h4 {
   font-size: 30.3px;
   font-family: var(--font-heading);
-  color: var(--gold);
+  color: #ab9025;
   margin-bottom: 25px;
 }
 
@@ -96,7 +96,7 @@
   display: block;
   text-align: center;
   font-size: 30.3px;
-  color: var(--gold);
+  color: #ab9025;
   margin-bottom: 20px;
   font-weight: bold;
 }
@@ -243,5 +243,42 @@
   .formulario button {
     font-size: 20px;
     padding: 10px 25px;
+  }
+}
+
+@media (max-width: 375px) {
+  .encabezado h2 {
+    font-size: 22px;
+  }
+
+  .encabezado h3 {
+    font-size: 15px;
+  }
+
+  .información-contacto h4 {
+    font-size: 20px;
+  }
+
+  .información-contacto p {
+    font-size: 15px;
+  }
+
+  .formulario {
+    padding: 12px;
+  }
+
+  .formulario label {
+    font-size: 15px;
+  }
+
+  .formulario input,
+  .formulario textarea {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  .formulario button {
+    font-size: 17px;
+    padding: 8px 20px;
   }
 }

@@ -1,46 +1,50 @@
-<link rel="stylesheet" href="/frontend/css/pages/admin-contacto.css">
-<section id="contacto" class="seccion-admin active">
-    <h1>Administrar Contacto</h1>
-    <p class="descripcion-seccion">Modifica la información de contacto y revisa los mensajes recibidos.</p>
+<style>
+    [data-seccion="contacto"] .admin-form input[type="text"],
+    [data-seccion="contacto"] .admin-form input[type="url"] {
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 6px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(0,0,0,0.3);
+        color: var(--text-white);
+        font-family: var(--font-body);
+        font-size: 0.95rem;
+        transition: var(--transition);
+    }
+    [data-seccion="contacto"] .admin-form input:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+</style>
 
-    <div class="admin-form" id="form-info-contacto">
-        <h2>Información de Contacto</h2>
+<div data-seccion="contacto">
+    <h2>Contacto</h2>
+
+    <div class="admin-form" id="form-contacto">
+        <h3>Información de contacto</h3>
+
         <div class="admin-form-group">
-            <label>Dirección</label>
-            <input type="text" id="contacto-direccion" placeholder="Dirección del hotel">
+            <label>Celular</label>
+            <input type="text" id="contacto-celular" placeholder="+57 300 000 0000">
         </div>
-        <div class="admin-form-group">
-            <label>Celular / Teléfono</label>
-            <input type="tel" id="contacto-celular" placeholder="+57 300 000 0000">
-        </div>
+
         <div class="admin-form-group">
             <label>Email</label>
-            <input type="email" id="contacto-email" placeholder="correo@hotel.com">
+            <input type="text" id="contacto-email" placeholder="correo@ejemplo.com">
         </div>
+
         <div class="admin-form-group">
-            <label>Mapa (iframe)</label>
-            <textarea id="contacto-mapa" placeholder="Código iframe de Google Maps"></textarea>
+            <label>Dirección</label>
+            <input type="text" id="contacto-direccion" placeholder="Calle 123 # 45-67, Ciudad">
         </div>
+
+        <div class="admin-form-group">
+            <label>Link de mapa Google</label>
+            <input type="text" id="contacto-mapa" placeholder="https://www.google.com/maps/embed?pb=...">
+        </div>
+
         <div class="admin-actions">
-            <button class="btn-guardar" onclick="guardarInfoContacto()">Guardar Información</button>
+            <button class="btn-guardar" onclick="api_contacto.guardar()">Guardar</button>
         </div>
     </div>
-
-    <h2 style="font-family:var(--font-serif);font-size:1.4rem;color:#222;margin-top:30px">Mensajes Recibidos</h2>
-
-    <div class="admin-table-wrap" style="margin-top:15px">
-        <table class="admin-table" id="tabla-mensajes">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Correo</th>
-                    <th>Asunto</th>
-                    <th>Fecha</th>
-                    <th>Estado</th>
-                    <th class="th-acciones">Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="mensajes-body"><tr><td colspan="6" class="vacio">Sin mensajes</td></tr></tbody>
-        </table>
-    </div>
-</section>
+</div>

@@ -1,98 +1,146 @@
-// ============================================================
-// NOSOTROS
-// ============================================================
+var api_nosotros = (() => {
 
-async function cargarNosotros() {
-  const res = await apiGet('nosotros');
-  if (res.success && res.datos.length > 0) {
-    const d = res.datos[0];
-    document.getElementById('nosotros-titulo').value = d.titulo || '';
-    document.getElementById('nosotros-subtitulo').value = d.subtitulo || '';
-    document.getElementById('nosotros-descripcion').value = d.descripcion || '';
-    document.getElementById('nosotros-imagen').value = d.imagen || '';
-    document.getElementById('nosotros-mision').value = d.mision || '';
-    document.getElementById('nosotros-mision-imagen').value = d.mision_imagen || '';
-    document.getElementById('nosotros-vision').value = d.vision || '';
-    document.getElementById('nosotros-vision-imagen').value = d.vision_imagen || '';
-    document.getElementById('nosotros-valores').value = d.valores || '';
-    document.getElementById('nosotros-valores-imagen').value = d.valores_imagen || '';
+    const SECCIONES = [
+        { id: 'mision', tabla: 'mision', descId: 'mision-descripcion', inputId: 'mision-input', areaId: 'mision-upload-area', previewId: 'mision-preview' },
+        { id: 'vision', tabla: 'vision', descId: 'vision-descripcion', inputId: 'vision-input', areaId: 'vision-upload-area', previewId: 'vision-preview' },
+        { id: 'valores', tabla: 'valores', descId: 'valores-descripcion', inputId: 'valores-input', areaId: 'valores-upload-area', previewId: 'valores-preview' }
+    ];
 
-    mostrarPreviewImg('nosotros-img-preview', 'nosotros-img-nombre', d.imagen);
-    mostrarPreviewImg('nosotros-mision-preview', 'nosotros-mision-nombre', d.mision_imagen);
-    mostrarPreviewImg('nosotros-vision-preview', 'nosotros-vision-nombre', d.vision_imagen);
-    mostrarPreviewImg('nosotros-valores-preview', 'nosotros-valores-nombre', d.valores_imagen);
-  }
-  configurarUpload('nosotros-img-input', 'nosotros-img-preview', 'nosotros-img-nombre', 'nosotros-imagen');
-  configurarUpload('nosotros-mision-input', 'nosotros-mision-preview', 'nosotros-mision-nombre', 'nosotros-mision-imagen');
-  configurarUpload('nosotros-vision-input', 'nosotros-vision-preview', 'nosotros-vision-nombre', 'nosotros-vision-imagen');
-  configurarUpload('nosotros-valores-input', 'nosotros-valores-preview', 'nosotros-valores-nombre', 'nosotros-valores-imagen');
-}
+    let archivos = { mision: null, vision: null, valores: null };
+    let idsExistentes = { mision: null, vision: null, valores: null };
 
-function mostrarPreviewImg(previewId, nombreId, url) {
-  if (!url) return;
-  const preview = document.getElementById(previewId);
-  const nombreEl = document.getElementById(nombreId);
-  if (preview) {
-    preview.style.display = 'flex';
-    preview.querySelector('img').src = url;
-  }
-  if (nombreEl) nombreEl.textContent = url.split('/').pop();
-}
+    function init() {
+        const allExist = SECCIONES.every(s =>
+            document.getElementById(s.inputId) &&
+            document.getElementById(s.descId) &&
+            document.getElementById(s.previewId)
+        );
+        if (!allExist) return setTimeout(init, 50);
+        archivos = { mision: null, vision: null, valores: null };
+        idsExistentes = { mision: null, vision: null, valores: null };
+        SECCIONES.forEach(s => {
+            document.getElementById(s.inputId).value = '';
+            document.getElementById(s.descId).value = '';
+            document.getElementById(s.previewId).innerHTML = '';
+        });
+        configurarUploads();
+        cargarIdsExistentes();
+    }
 
-async function guardarNosotros() {
-  const data = {
-    titulo: document.getElementById('nosotros-titulo').value,
-    subtitulo: document.getElementById('nosotros-subtitulo').value,
-    descripcion: document.getElementById('nosotros-descripcion').value,
-    imagen: document.getElementById('nosotros-imagen').value,
-    mision: document.getElementById('nosotros-mision').value,
-    mision_imagen: document.getElementById('nosotros-mision-imagen').value,
-    vision: document.getElementById('nosotros-vision').value,
-    vision_imagen: document.getElementById('nosotros-vision-imagen').value,
-    valores: document.getElementById('nosotros-valores').value,
-    valores_imagen: document.getElementById('nosotros-valores-imagen').value
-  };
+    async function cargarSeccion(sec) {
+        try {
+            const descEl = document.getElementById(sec.descId);
+            const prevEl = document.getElementById(sec.previewId);
+            if (!descEl || !prevEl) return;
+            const json = await apiGet(sec.tabla);
+            if (json.success && json.datos.length > 0) {
+                const dato = json.datos[0];
+                idsExistentes[sec.id] = dato.id;
+                descEl.value = dato.descripcion || '';
+                if (dato.imagen) {
+                    prevEl.innerHTML = `
+                        <div class="preview-item">
+                            <img src="${dato.imagen}?=${Date.now()}" alt="${sec.id}">
+                            <button class="btn-remove-img" data-sec="${sec.id}" data-tipo="existente">X</button>
+                        </div>`;
+                }
+            }
+        } catch (e) {}
+    }
 
-  const res = await apiGet('nosotros');
-  let r;
-  if (res.success && res.datos.length > 0) {
-    r = await apiPut('nosotros', res.datos[0].id, data);
-  } else {
-    r = await apiPost('nosotros', data);
-  }
-  if (r.success) {
-    toast('Información guardada', 'exito');
-    limpiarFormularioNosotros();
-  } else {
-    toast('Error al guardar', 'error');
-  }
-}
+    async function cargarIdsExistentes() {
+        for (const sec of SECCIONES) {
+            try {
+                const json = await apiGet(sec.tabla);
+                if (json.success && json.datos.length > 0) {
+                    idsExistentes[sec.id] = json.datos[0].id;
+                }
+            } catch (e) {}
+        }
+    }
 
-function removerNosotrosImg(tipo) {
-  const preview = document.getElementById('nosotros-' + tipo + '-preview');
-  const nombreEl = document.getElementById('nosotros-' + tipo + '-nombre');
-  const hiddenId = tipo === 'img' ? 'nosotros-imagen' : 'nosotros-' + tipo + '-imagen';
-  const hidden = document.getElementById(hiddenId);
-  const input = document.getElementById('nosotros-' + tipo + '-input');
+    function configurarUploads() {
+        SECCIONES.forEach(sec => {
+            const input = document.getElementById(sec.inputId);
+            const area = document.getElementById(sec.areaId);
+            if (!input || !area) return;
 
-  if (preview) { preview.style.display = 'none'; preview.querySelector('img').src = ''; }
-  if (nombreEl) nombreEl.textContent = '';
-  if (hidden) hidden.value = '';
-  if (input) input.value = '';
-}
+            input.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    archivos[sec.id] = e.target.files[0];
+                    const container = document.getElementById(sec.previewId);
+                    container.innerHTML = `
+                        <div class="preview-item">
+                            <img src="${URL.createObjectURL(archivos[sec.id])}" alt="${sec.id}">
+                            <button class="btn-remove-img" data-sec="${sec.id}" data-tipo="nuevo">X</button>
+                        </div>`;
+                }
+                e.target.value = '';
+            });
 
-function limpiarFormularioNosotros() {
-  document.getElementById('nosotros-titulo').value = '';
-  document.getElementById('nosotros-subtitulo').value = '';
-  document.getElementById('nosotros-descripcion').value = '';
-  document.getElementById('nosotros-mision').value = '';
-  document.getElementById('nosotros-vision').value = '';
-  document.getElementById('nosotros-valores').value = '';
-  removerNosotrosImg('img');
-  removerNosotrosImg('mision');
-  removerNosotrosImg('vision');
-  removerNosotrosImg('valores');
-}
+            document.getElementById(sec.previewId).addEventListener('click', (e) => {
+                const btn = e.target.closest('.btn-remove-img');
+                if (!btn || btn.dataset.sec !== sec.id) return;
+                archivos[sec.id] = null;
+                if (btn.dataset.tipo === 'nuevo') {
+                    document.getElementById(sec.previewId).innerHTML = '';
+                } else {
+                    document.getElementById(sec.previewId).innerHTML = '';
+                }
+            });
+        });
+    }
 
-// Init
-cargarNosotros();
+    function guardarTodo() {
+        abrirModalConfirmar(
+            'Se guardarán los cambios en Misión, Visión y Valores.',
+            ejecutarGuardado,
+            'Guardar',
+            'success'
+        );
+    }
+
+    async function ejecutarGuardado() {
+        try {
+            for (const sec of SECCIONES) {
+                const descripcion = document.getElementById(sec.descId).value.trim();
+                let imagenUrl = null;
+
+                if (archivos[sec.id]) {
+                    const json = await subirArchivo(archivos[sec.id]);
+                    if (json.success) imagenUrl = json.ruta;
+                }
+
+                const datos = { descripcion };
+                if (imagenUrl) datos.imagen = imagenUrl;
+
+                if (idsExistentes[sec.id]) {
+                    const resPut = await apiPut(sec.tabla, idsExistentes[sec.id], datos);
+                    if (!resPut.success) toast('Error al actualizar ' + sec.id, 'error');
+                } else {
+                    if (!datos.imagen) {
+                        toast('Debe seleccionar una imagen para ' + sec.id, 'warning');
+                        continue;
+                    }
+                    const res = await apiPost(sec.tabla, datos);
+                    if (res.success) idsExistentes[sec.id] = res.id;
+                }
+            }
+
+            archivos = { mision: null, vision: null, valores: null };
+            SECCIONES.forEach(s => {
+                document.getElementById(s.inputId).value = '';
+                document.getElementById(s.descId).value = '';
+                document.getElementById(s.previewId).innerHTML = '';
+            });
+
+            toast('Se ha guardado correctamente', 'success');
+
+        } catch (e) {
+            toast('Error al guardar: ' + e.message, 'error');
+        }
+    }
+
+    return { init, guardarTodo };
+
+})();

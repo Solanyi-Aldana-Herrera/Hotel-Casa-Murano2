@@ -17,10 +17,13 @@
     <header class="header-admin">
         <div class="navegador navegador-admin">
             <div class="navbar-admin">
+                <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Menú">
+                    <span></span><span></span><span></span>
+                </button>
                 <div class="logo logo-admin">
-                    <img src="/frontend/images/logo/LogoConNombre.png" alt="logo">
+                    <img loading="lazy" src="/frontend/images/logo/LogoConNombre.png" alt="logo">
                 </div>
-                <h1>ADMINISTRADOR DE CONTENIDO - HOTEL CASA MURANO</h1>
+                <h1>ADMINISTRADOR-HOTEL CASA MURANO</h1>
                 <ul>
                     <li>
                         <button class="btn-salir" onclick="salir()">
@@ -34,6 +37,8 @@
 
     <div class="admin-container">
 
+        <div class="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
         <aside class="sidebar">
             <nav>
                 <ul>
@@ -43,7 +48,7 @@
                     <li><button onclick="cargarSeccion('servicios')" data-sec="servicios">Servicios</button></li>
                     <li><button onclick="cargarSeccion('galeria')" data-sec="galeria">Galería</button></li>
                     <li><button onclick="cargarSeccion('contacto')" data-sec="contacto">Contacto</button></li>
-                    <li><button onclick="cargarSeccion('reservas')" data-sec="reservas">Reservas</button></li>
+                    <li><button onclick="cargarSeccion('otros')" data-sec="otros">Otros</button></li>
                 </ul>
             </nav>
         </aside>
@@ -60,7 +65,7 @@
     <div class="modal-confirmar" id="modal-confirmar">
         <div class="modal-box">
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-            <h3>¿Eliminar registro?</h3>
+            <h3 id="modal-confirmar-title">¿Eliminar registro?</h3>
             <p id="modal-confirmar-msg">Esta acción no se puede deshacer.</p>
             <div class="modal-acciones">
                 <button class="btn-eliminar" id="modal-confirmar-btn">Eliminar</button>

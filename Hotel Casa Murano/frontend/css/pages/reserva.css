@@ -44,7 +44,7 @@ body { background-color: #fafafa; font-family: 'Forum', serif; }
   align-items: center;
   gap: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  border: 3px solid var(--primary-light);
+  border: 3px solid #27d0dc;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -211,7 +211,7 @@ body { background-color: #fafafa; font-family: 'Forum', serif; }
   text-align: center;
   font-family: var(--font-body);
   font-size: 32px;
-  color: var(--gold);
+  color: #ab9025;
   margin-bottom: 40px;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -260,7 +260,7 @@ body { background-color: #fafafa; font-family: 'Forum', serif; }
 .habitacion-info h4 {
   font-family: var(--font-body);
   font-size: 24px;
-  color: var(--gold);
+  color: #ab9025;
   margin-bottom: 12px;
   font-weight: 400;
 }
@@ -288,7 +288,7 @@ body { background-color: #fafafa; font-family: 'Forum', serif; }
   font-family: var(--font-body);
   font-size: 22px;
   font-weight: 700;
-  color: var(--gold);
+  color: #ab9025;
   background: var(--color-price-bg);
   border: 2px solid var(--color-price-border);
   border-radius: 10px;
@@ -370,7 +370,7 @@ body { background-color: #fafafa; font-family: 'Forum', serif; }
 .form-field select:focus,
 .form-field textarea:focus {
   outline: none;
-  border-color: var(--gold);
+  border-color: #ab9025;
   box-shadow: 0 0 6px rgba(177, 151, 65, 0.2);
 }
 
@@ -418,7 +418,7 @@ body { background-color: #fafafa; font-family: 'Forum', serif; }
 .resumen-col h3 {
   font-family: var(--font-body);
   font-size: 18px;
-  color: var(--gold);
+  color: #ab9025;
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 15px;
@@ -447,7 +447,7 @@ body { background-color: #fafafa; font-family: 'Forum', serif; }
   font-family: var(--font-body) !important;
   font-size: 28px !important;
   font-weight: 700 !important;
-  color: var(--gold) !important;
+  color: #ab9025 !important;
   text-align: center;
   padding: 15px 0;
 }
@@ -670,6 +670,108 @@ body { background-color: #fafafa; font-family: 'Forum', serif; }
   }
 }
 
+@media (max-width: 375px) {
+  #habitacion-detalle-reserva .reserva-box {
+    padding: 10px;
+    border-radius: 20px;
+    gap: 8px;
+  }
+
+  #habitacion-detalle-reserva .fechas-container {
+    padding: 4px 8px;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  #habitacion-detalle-reserva .fecha-display p {
+    font-size: 18px;
+  }
+
+  #habitacion-detalle-reserva .fecha-display span {
+    font-size: 11px;
+  }
+
+  #habitacion-detalle-reserva .icon-group span {
+    font-size: 15px;
+    margin-right: 3px;
+  }
+
+  #habitacion-detalle-reserva .icon-wrapper {
+    width: 20px;
+    height: 20px;
+  }
+
+  #habitacion-detalle-reserva .label-reserva {
+    font-size: 10px;
+  }
+
+  .reserva-titulo {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  .habitacion-img {
+    height: 140px;
+  }
+
+  .habitacion-info {
+    padding: 12px;
+  }
+
+  .habitacion-info h4 {
+    font-size: 17px;
+  }
+
+  .habitacion-info p {
+    font-size: 13px;
+  }
+
+  .habitacion-precio {
+    font-size: 15px;
+    padding: 6px 12px;
+  }
+
+  .btn-seleccionar {
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+
+  .form-datos {
+    padding: 15px;
+  }
+
+  .btn-siguiente {
+    font-size: 16px;
+    padding: 10px 30px;
+  }
+
+  .resumen-col {
+    padding: 12px;
+  }
+
+  .resumen-col h3 {
+    font-size: 15px;
+  }
+
+  .resumen-col p {
+    font-size: 13px;
+  }
+
+  .resumen-precio {
+    font-size: 22px !important;
+  }
+
+  .btn-confirmar {
+    font-size: 15px;
+    padding: 10px 14px;
+  }
+
+  .reserva-contenedor {
+    margin: 10px auto;
+    padding: 0 10px;
+  }
+}
+
 .navegador{
   justify-content: center;
 }
@@ -718,7 +820,7 @@ body { background-color: #fafafa; font-family: 'Forum', serif; }
 }
 
 .navbar ul li a.active {
-  color: var(--primary-light);
+  color: #27d0dc;
 }
 
 .navbar ul li a.active::after {

@@ -1,23 +1,42 @@
 :root {
-  --primary: #12cbc4;
-  --primary-light: #27d0dc;
-  --primary-dark: #0ea8a0;
-  --gold: #ab9025;
-  --bg-dark: #0d1216;
-  --bg-form: #141b22;
-  --bg-black: #000;
-  --bg-dark-alt: #1e1e1e;
-  --bg-admin: #141B22;
-  --text-white: #fff;
-  --text-dark: #333;
-  --text-muted: #8a99a8;
-  --font-heading: 'Forum', serif;
-  --font-body: 'Fraunces', serif;
-  --font-decorative: 'Pinyon Script', cursive;
-  --font-sans: 'Poppins', sans-serif;
-  --font-serif: 'Playfair Display', serif;
-  --transition: 0.3s ease;
+    --primary: #12cbc4;
+    --primary-dark: #0e9e98;
+    --primary-light: #1de9d6;
+    --gold: #c9a84c;
+    --bg-dark: #0F1923;
+    --bg-dark-alt: #1A1A2E;
+    --bg-admin: #0B0F15;
+    --bg-form: #141B22;
+    --text-white: #ffffff;
+    --text-muted: #8899aa;
+    --font-heading: 'Forum', serif;
+    --font-body: 'Fraunces', serif;
+    --transition: all 0.3s ease;
 }
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-dark);
+}
+
+main {
+    flex: 1;
+    background-color: white;
+}
+
 
 * {
   margin: 0;
@@ -44,3 +63,4 @@ a {
 ul {
   list-style: none;
 }
+

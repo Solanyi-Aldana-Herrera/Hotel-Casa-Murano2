@@ -1,0 +1,45 @@
+<style>
+    [data-seccion="otros"] .admin-form input[type="text"],
+    [data-seccion="otros"] .admin-form input[type="url"] {
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 6px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(0,0,0,0.3);
+        color: var(--text-white);
+        font-family: var(--font-body);
+        font-size: 0.95rem;
+        transition: var(--transition);
+    }
+    [data-seccion="otros"] .admin-form input:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+</style>
+
+<div data-seccion="otros">
+    <h2>Otros</h2>
+
+    <div class="admin-form" id="form-redes">
+        <h3>Redes sociales</h3>
+
+        <div class="admin-form-group">
+            <label>Facebook</label>
+            <input type="text" id="redes-facebook" placeholder="https://facebook.com/...">
+        </div>
+
+        <div class="admin-form-group">
+            <label>Instagram</label>
+            <input type="text" id="redes-instagram" placeholder="https://instagram.com/...">
+        </div>
+
+        <div class="admin-form-group">
+            <label>Whatsapp</label>
+            <input type="text" id="redes-whatsapp" placeholder="https://wa.me/57300...">
+        </div>
+
+        <div class="admin-actions">
+            <button class="btn-guardar" onclick="api_otros.guardar()">Guardar</button>
+        </div>
+    </div>
+</div>

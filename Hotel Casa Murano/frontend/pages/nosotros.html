@@ -25,7 +25,7 @@
         <div class="navegador">
             <div class="logo">
                 <a href="/frontend/index.html" class="enlace-logo">
-                    <img src="/frontend/images/logo/LogoConNombre.png" alt="logo">
+                    <img loading="lazy" src="/frontend/images/logo/LogoConNombre.png" alt="logo">
                 </a>
                 
             </div> 
@@ -58,7 +58,7 @@
                 </div>
                 <div class="contenedor-nosotros">
                     <div class="img1">
-                        <img src="/frontend/images/contenido/Frente de hotel.webp" alt="Frente de Hotel">
+                        <img loading="lazy" src="/frontend/images/contenido/Frente de hotel.webp" alt="Frente de Hotel">
                     </div>
                                     
                     <div class="texto_nosotros">
@@ -78,7 +78,7 @@
                     <p>Brindar a nuestros huéspedes una experiencia de hospedaje cálida, confortable y memorable, ofreciendo atención personalizada, espacios acogedores y servicios de calidad que reflejen la esencia y hospitalidad de Hotel Casa Murano.</p><br>
                 </div>
                 <div class="imagen-mision">
-                    <img src="/frontend/images/iconos/icono_mision.png">
+                    <img loading="lazy" src="/frontend/images/iconos/icono_mision.png">
                 </div> 
             </div>
             
@@ -88,7 +88,7 @@
                     <p>Ser reconocido como un hotel referente por su excelencia en servicio, confort y atención personalizada, posicionándonos como una opción preferida para quienes buscan descanso, tranquilidad y experiencias únicas de alojamiento.</p><br> 
                 </div>
                 <div class="imagen.vision">
-                    <img src="/frontend/images/iconos/icono_vision.png">
+                    <img loading="lazy" src="/frontend/images/iconos/icono_vision.png">
                 </div>
             </div>
             
@@ -103,7 +103,7 @@
                     Sostenibilidad: Promovemos prácticas responsables con el medio ambiente y la comunidad.</p>
                 </div>
                 <div class="imagen.valores">
-                    <img src="/frontend/images/iconos/icono_valores.png">
+                    <img loading="lazy" src="/frontend/images/iconos/icono_valores.png">
                 </div>
             </div>
                                 
@@ -120,7 +120,7 @@
         <div class="pie-pagina">
             <div class="logo">
                 <a href="/frontend/index.html" class="enlace-logo">
-                    <img src="/frontend/images/logo/LogoConNombre.png" alt="logo">
+                    <img loading="lazy" src="/frontend/images/logo/LogoConNombre.png" alt="logo">
                 </a>
             </div>
         
@@ -129,11 +129,11 @@
                     <h4>SIGUENOS</h4>
                     <div class="contenedor-iconos">
                         <a href="https://www.facebook.com/hotelcasamuraneivahuila/" target="_blank" class="icono-social">
-                            <img src="/frontend/images/social/Facebook Icon.png" alt="Facebook">
+                            <img loading="lazy" src="/frontend/images/social/Facebook Icon.png" alt="Facebook">
                         </a>
 
                         <a href="https://www.instagram.com/p/DXMbZM8kbkD/" target="_blank" class="icono-social">
-                            <img src="/frontend/images/social/Instagram.png" alt="Instagram">
+                            <img loading="lazy" src="/frontend/images/social/Instagram.png" alt="Instagram">
                         </a>
                     </div>      
                 </div>
@@ -144,13 +144,13 @@
         
             <div class="informacion">
                 <div class="info-item1">
-                    <h4>DIRECCIÓN:</h4><P>Avenida Circunvalar No 6 -32,</P><br><br>
+                    <h4>DIRECCIÓN:</h4><P id="footer-direccion">Avenida Circunvalar No 6 -32,</P><br><br>
                 </div>
                 <div class="info-item2">
-                    <h4>EMAIL:</h4><P>hotelcasamuranoneivahuila@hotmail.com</P><br>
+                    <h4>EMAIL:</h4><P id="footer-email">hotelcasamuranoneivahuila@hotmail.com</P><br>
                 </div>
                 <div class="info-item3">
-                    <h4>TELEFONO:</h4><P>3144785524</P><br><br>
+                    <h4>TELEFONO:</h4><P id="footer-telefono">3144785524</P><br><br>
                 </div>
                 
             </div>
@@ -168,8 +168,50 @@
 
     <!-- Aquí enlazarás tu archivo JS -->
     <a href="https://wa.me/573144785524" target="_blank" class="whatsapp-float" aria-label="WhatsApp">
-        <img src="/frontend/images/social/WhatsApp.png" alt="WhatsApp">
+        <img loading="lazy" src="/frontend/images/social/WhatsApp.png" alt="WhatsApp">
     </a>
     <script src="/frontend/js/main.js"></script>
+    <script>
+        const API_BASE = '';
+
+        async function cargarNosotros() {
+            try {
+                const [rM, rV, rVal] = await Promise.all([
+                    fetch(API_BASE + '/api/mision'),
+                    fetch(API_BASE + '/api/vision'),
+                    fetch(API_BASE + '/api/valores')
+                ]);
+                const [jsonM, jsonV, jsonVal] = await Promise.all([rM.json(), rV.json(), rVal.json()]);
+
+                if (jsonM.success && jsonM.datos.length > 0) {
+                    const d = jsonM.datos[0];
+                    const p = document.querySelector('.mision p');
+                    const img = document.querySelector('.imagen-mision img');
+                    if (p && d.descripcion) p.textContent = d.descripcion;
+                    if (img && d.imagen) img.src = d.imagen;
+                }
+
+                if (jsonV.success && jsonV.datos.length > 0) {
+                    const d = jsonV.datos[0];
+                    const p = document.querySelector('.vision p');
+                    const img = document.querySelector('.imagen\\.vision img');
+                    if (p && d.descripcion) p.textContent = d.descripcion;
+                    if (img && d.imagen) img.src = d.imagen;
+                }
+
+                if (jsonVal.success && jsonVal.datos.length > 0) {
+                    const d = jsonVal.datos[0];
+                    const p = document.querySelector('.valores p');
+                    const img = document.querySelector('.imagen\\.valores img');
+                    if (p && d.descripcion) p.textContent = d.descripcion;
+                    if (img && d.imagen) img.src = d.imagen;
+                }
+            } catch (e) {
+                console.warn('No se pudieron cargar los datos de nosotros');
+            }
+        }
+
+        cargarNosotros();
+    </script>
 </body>
 </html>

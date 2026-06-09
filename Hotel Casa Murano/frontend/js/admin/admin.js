@@ -1,79 +1,76 @@
-const API = 'http://localhost:3000';
+const API_BASE = '';
 
-function salir() {
-    window.location.replace('/frontend/index.html');
+if (!sessionStorage.getItem('auth_admin')) {
+    window.location.replace('/frontend/pages/login.html');
 }
-
-// ============================================================
-// SCRIPTS CARGADOS (evita recargar)
-// ============================================================
-const scriptsCargados = new Set();
-
-function cargarScript(url) {
-    return new Promise((resolve, reject) => {
-        if (scriptsCargados.has(url)) { resolve(); return; }
-        const s = document.createElement('script');
-        s.src = url;
-        s.onload = () => { scriptsCargados.add(url); resolve(); };
-        s.onerror = reject;
-        document.body.appendChild(s);
-    });
-}
-
-// ============================================================
-// NAVEGACIÓN POR SECCIONES
-// ============================================================
-
-async function cargarSeccion(id) {
-
-    document.querySelectorAll('.sidebar button').forEach(b => b.style.background = '');
-    const btn = document.querySelector(`.sidebar button[data-sec="${id}"]`);
-    if (btn) btn.style.background = 'var(--gold)';
-
-    const panel = document.getElementById('panel-contenido');
-    panel.innerHTML = '<div class="msj-cargando"><div class="spinner"></div><p>Cargando...</p></div>';
-
-    window.location.hash = id;
-
-    try {
-        const htmlResp = await fetch(`/frontend/pages/admin/${id}.html`);
-        panel.innerHTML = await htmlResp.text();
-        await cargarScript(`/frontend/js/admin/admin-${id}.js`);
-    } catch (e) {
-        console.error(e);
-        panel.innerHTML = '<div class="msj-vacio"><p>Error al cargar la sección</p></div>';
-    }
-}
-
-// Cargar sección inicial según hash o por defecto
-window.addEventListener('DOMContentLoaded', () => {
-    const hash = window.location.hash.replace('#', '');
-    const secciones = ['inicio','nosotros','habitaciones','servicios','galeria','contacto','reservas'];
-    const seccion = secciones.includes(hash) ? hash : 'inicio';
-    cargarSeccion(seccion);
-});
-
-// ============================================================
-// TOAST / NOTIFICACIÓN
-// ============================================================
-
-function toast(msg, tipo) {
-    const c = document.getElementById('toast-container');
-    const t = document.createElement('div');
-    t.className = 'toast ' + tipo;
-    t.textContent = msg;
-    c.appendChild(t);
-    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
-}
-
-// ============================================================
-// MODAL CONFIRMAR
-// ============================================================
 
 let confirmCallback = null;
 
-function abrirModalConfirmar(msg, cb) {
+function salir() {
+    sessionStorage.removeItem('auth_admin');
+    window.location.replace('/frontend/pages/login.html');
+}
+
+function toggleSidebar() {
+    document.querySelector('.admin-container').classList.toggle('sidebar-abierto');
+    document.querySelector('.sidebar-toggle').classList.toggle('active');
+}
+
+function cerrarSidebarMovil() {
+    const container = document.querySelector('.admin-container');
+    if (container && container.classList.contains('sidebar-abierto')) {
+        container.classList.remove('sidebar-abierto');
+        document.querySelector('.sidebar-toggle')?.classList.remove('active');
+    }
+}
+
+function cargarSeccion(nombre) {
+    cerrarSidebarMovil();
+    const panel = document.getElementById('panel-contenido');
+    panel.innerHTML = '<div class="msj-cargando"><div class="spinner"></div><p>Cargando...</p></div>';
+
+    document.querySelectorAll('.sidebar button').forEach(b => b.classList.remove('activo'));
+    const btn = document.querySelector(`.sidebar button[data-sec="${nombre}"]`);
+    if (btn) btn.classList.add('activo');
+
+    fetch(`/frontend/pages/admin/${nombre}.html?_=${Date.now()}`)
+        .then(r => {
+            if (!r.ok) throw new Error('No encontrada');
+            return r.text();
+        })
+        .then(html => {
+            panel.innerHTML = html;
+            cargarScript(`/frontend/js/admin/admin-${nombre}.js`);
+        })
+        .catch(() => {
+            panel.innerHTML = `
+                <h2>${nombre.charAt(0).toUpperCase() + nombre.slice(1)}</h2>
+                <p style="color:var(--text-muted);font-family:var(--font-body);">
+                    Sección en construcción.
+                </p>`;
+        });
+}
+
+function cargarScript(src) {
+    const existing = document.querySelector(`script[src^="${src.split('?')[0]}"]`);
+    if (existing) existing.remove();
+    const sec = document.querySelector('.sidebar button.activo')?.dataset.sec;
+    if (sec) delete window['api_' + sec];
+    const s = document.createElement('script');
+    s.src = src + '?_=' + Date.now();
+    s.onload = () => {
+        const fn = window['api_' + sec];
+        if (typeof fn?.init === 'function') fn.init();
+    };
+    document.body.appendChild(s);
+}
+
+function abrirModalConfirmar(msg, cb, textoBoton = 'Eliminar', tipo = 'danger') {
+    document.getElementById('modal-confirmar-title').textContent = textoBoton === 'Guardar' ? '¿Guardar cambios?' : '¿Eliminar registro?';
     document.getElementById('modal-confirmar-msg').textContent = msg;
+    const btn = document.getElementById('modal-confirmar-btn');
+    btn.textContent = textoBoton;
+    btn.className = tipo === 'success' ? 'btn-guardar' : 'btn-eliminar';
     document.getElementById('modal-confirmar').classList.add('mostrar');
     confirmCallback = cb;
 }
@@ -83,95 +80,57 @@ function cerrarModalConfirmar() {
     confirmCallback = null;
 }
 
-document.addEventListener('click', (e) => {
-    if (e.target.closest('#modal-confirmar-btn') && confirmCallback) {
-        confirmCallback();
-        cerrarModalConfirmar();
-    }
+document.getElementById('modal-confirmar-btn')?.addEventListener('click', () => {
+    if (typeof confirmCallback === 'function') confirmCallback();
+    cerrarModalConfirmar();
 });
 
-// ============================================================
-// FETCH HELPERS
-// ============================================================
+function toast(mensaje, tipo = 'success') {
+    const container = document.getElementById('toast-container');
+    const el = document.createElement('div');
+    el.className = 'toast ' + tipo;
+    el.textContent = mensaje;
+    container.appendChild(el);
+    setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transition = 'opacity 0.3s';
+        setTimeout(() => el.remove(), 300);
+    }, 3000);
+}
 
-async function apiGet(tabla, id) {
-    const url = id ? `${API}/api/${tabla}/${id}` : `${API}/api/${tabla}`;
-    const r = await fetch(url);
+async function apiGet(tabla) {
+    const r = await fetch(`${API_BASE}/api/${tabla}?_=${Date.now()}`);
     return r.json();
 }
 
-async function apiPost(tabla, data) {
-    const r = await fetch(`${API}/api/${tabla}`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+async function apiPost(tabla, datos) {
+    const r = await fetch(`${API_BASE}/api/${tabla}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
     });
     return r.json();
 }
 
-async function apiPut(tabla, id, data) {
-    const r = await fetch(`${API}/api/${tabla}/${id}`, {
-        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+async function apiPut(tabla, id, datos) {
+    const r = await fetch(`${API_BASE}/api/${tabla}/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
     });
     return r.json();
 }
 
 async function apiDelete(tabla, id) {
-    const r = await fetch(`${API}/api/${tabla}/${id}`, { method: 'DELETE' });
+    const r = await fetch(`${API_BASE}/api/${tabla}/${id}`, { method: 'DELETE' });
     return r.json();
 }
 
 async function subirArchivo(file) {
     const fd = new FormData();
     fd.append('imagen', file);
-    const r = await fetch(`${API}/api/upload`, { method: 'POST', body: fd });
+    const r = await fetch(`${API_BASE}/api/upload`, { method: 'POST', body: fd });
     return r.json();
 }
 
-function configurarUpload(inputId, previewId, nombreId, hiddenId) {
-    const input = document.getElementById(inputId);
-    const preview = document.getElementById(previewId);
-    const nombreEl = document.getElementById(nombreId);
-    const hidden = document.getElementById(hiddenId);
-    if (!input) return;
-
-    input.addEventListener('change', async () => {
-        const file = input.files[0];
-        if (!file) return;
-
-        // Mostrar preview local inmediatamente
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            preview.style.display = 'flex';
-            preview.querySelector('img').src = e.target.result;
-            nombreEl.textContent = file.name;
-            hidden.value = '';
-        };
-        reader.readAsDataURL(file);
-
-        // Subir al servidor en segundo plano
-        const res = await subirArchivo(file);
-        if (res.success) {
-            preview.querySelector('img').src = res.ruta;
-            hidden.value = res.ruta;
-        } else {
-            toast('Error al subir la imagen al servidor', 'error');
-        }
-    });
-}
-
-function mostrarCargando(el) {
-    el.innerHTML = '<div class="msj-cargando"><div class="spinner"></div><p>Cargando...</p></div>';
-}
-
-function filtrarTabla(seccion) {
-    const input = document.getElementById(seccion + '-buscar');
-    if (!input) return;
-    const filtro = input.value.toLowerCase();
-    const tabla = document.getElementById('tabla-' + seccion);
-    if (!tabla) return;
-    const filas = tabla.querySelectorAll('tbody tr');
-    filas.forEach(row => {
-        if (row.querySelector('.vacio')) return;
-        const texto = row.textContent.toLowerCase();
-        row.style.display = texto.includes(filtro) ? '' : 'none';
-    });
-}
+cargarSeccion('inicio');

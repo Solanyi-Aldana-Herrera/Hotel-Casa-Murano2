@@ -1,37 +1,24 @@
-const habitaciones = [
-    {
-        nombre: 'Suite Deluxe',
-        imagen: '/frontend/images/contenido/Frente de hotel.webp',
-        descripcion: 'Habitación amplia con vista panorámica, jacuzzi y minibar.',
-        detalle: 'Habitación cómoda de 12 m2, ubicada en el primer piso ofrece una cama sencilla con baño privado, tv pantalla plana, wi-Fi gratuito con ocupación de hasta 1 persona.',
-        precio: 250000,
-        capacidad: 1,
-    },
-    {
-        nombre: 'Habitación Estándar',
-        imagen: '/frontend/images/contenido/Frente de hotel.webp',
-        descripcion: 'Comodidad y elegancia a un precio accesible.',
-        detalle: 'Habitación amplia con jacuzzi, minibar, televisión, Wi-Fi y vista panorámica.',
-        precio: 180000,
-        capacidad: 2,
-    },
-    {
-        nombre: 'Suite Deluxe',
-        imagen: '/frontend/images/contenido/Frente de hotel.webp',
-        descripcion: 'Habitación amplia con vista panorámica, jacuzzi y minibar.',
-        detalle: 'Habitación amplia con jacuzzi, minibar, televisión, Wi-Fi y vista panorámica.',
-        precio: 250000,
-        capacidad: 1,
-    },
-    {
-        nombre: 'Habitación Estándar',
-        imagen: '/frontend/images/contenido/Frente de hotel.webp',
-        descripcion: 'Comodidad y elegancia a un precio accesible.',
-        detalle: 'Habitación amplia con jacuzzi, minibar, televisión, Wi-Fi y vista panorámica.',
-        precio: 180000,
-        capacidad: 2,
-    },
-];
+let habitaciones = [];
+
+async function cargarHabitacionesAPI() {
+    try {
+        const r = await fetch('/api/habitaciones?_=' + Date.now());
+        const json = await r.json();
+        if (!json.success) return;
+        habitaciones = json.datos.map(h => ({
+            nombre: h.nombre,
+            imagen: h.imagen,
+            descripcion: h.descripcion_primera,
+            detalle: h.descripcion_segunda,
+            precio: Number(h.precio),
+            capacidad: h.capacidad,
+            id: h.id
+        }));
+        renderizarHabitaciones();
+    } catch (e) {
+        console.error('Error al cargar habitaciones:', e);
+    }
+}
 
 const NAV_MAP = [
     { linkText: 'Selecciona la habitación', sectionId: 'habitacion-detalle-reserva' },
@@ -39,7 +26,9 @@ const NAV_MAP = [
     { linkText: 'Confirma tu reserva', sectionId: 'resumen-reserva' },
 ];
 
-const WHATSAPP_NUMBER = '573144785524';
+function getWhatsAppBaseUrl() {
+    return window.__WA_LINK || 'https://wa.me/573144785524';
+}
 
 let reservaData = {
     habitacion: null,
@@ -302,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('click', cerrarRvaOcupacion);
 
     cargarReservaHome();
-    renderizarHabitaciones();
+    cargarHabitacionesAPI();
 
     document.getElementById('btn-siguiente').addEventListener('click', function () {
         const nombres = document.getElementById('nombres').value.trim();
@@ -402,6 +391,6 @@ function enviarWhatsApp() {
         '\u00a1Gracias!',
     ].join('\n');
 
-    const url = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(mensaje);
+    const url = getWhatsAppBaseUrl() + '?text=' + encodeURIComponent(mensaje);
     window.open(url, '_blank');
 }

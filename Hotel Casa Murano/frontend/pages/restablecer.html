@@ -65,7 +65,7 @@
 
         (async () => {
             try {
-                const respuesta = await fetch('http://localhost:3000/validar-token', {
+                const respuesta = await fetch('/validar-token', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ token })
@@ -88,7 +88,7 @@
             const password = document.getElementById('nuevaContrasena').value;
 
             try {
-                const respuesta = await fetch('http://localhost:3000/actualizar-clave-directa', {
+                const respuesta = await fetch('/actualizar-clave-directa', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 

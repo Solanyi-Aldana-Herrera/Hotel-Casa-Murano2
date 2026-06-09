@@ -1,51 +1,152 @@
-<link rel="stylesheet" href="/frontend/css/pages/admin-servicios.css">
-<section id="servicios" class="seccion-admin active">
-    <h1>Administrar Servicios</h1>
-    <p class="descripcion-seccion">Administra los servicios que ofrece el hotel.</p>
+<style>
+    [data-seccion="servicios"] .admin-form textarea {
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 6px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(0,0,0,0.3);
+        color: var(--text-white);
+        font-family: var(--font-body);
+        font-size: 0.95rem;
+        resize: vertical;
+        min-height: 100px;
+        transition: var(--transition);
+    }
+    [data-seccion="servicios"] .admin-form textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+    .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    .preview-item {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        aspect-ratio: 16 / 9;
+        background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.08);
+        max-width: 200px;
+    }
+    .preview-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .btn-remove-img {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: rgba(231, 76, 60, 0.9);
+        color: white;
+        border: none;
+        font-size: 0.75rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+        line-height: 1;
+    }
+    .btn-remove-img:hover {
+        background: #e74c3c;
+        transform: scale(1.1);
+    }
+    .eliminar-lista {
+        margin-top: 1.5rem;
+        display: none;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1rem;
+    }
+    .eliminar-lista.mostrar {
+        display: grid;
+    }
+    .eliminar-item {
+        background: rgba(0,0,0,0.2);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 8px;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+    .eliminar-item-info h4 {
+        margin: 0 0 4px;
+        color: var(--text-white);
+        font-family: var(--font-body);
+        font-size: 1rem;
+    }
+    .eliminar-item-info p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+    .btn-eliminar-item {
+        background: rgba(231,76,60,0.9);
+        color: white;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-family: var(--font-body);
+        font-size: 0.85rem;
+        transition: var(--transition);
+        white-space: nowrap;
+    }
+    .btn-eliminar-item:hover {
+        background: #e74c3c;
+    }
+    .form-servicio {
+        display: none;
+    }
+    .form-servicio.mostrar {
+        display: block;
+    }
+</style>
 
-    <div class="admin-toolbar">
-        <button class="btn-agregar" onclick="abrirFormServicio()">
-            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-            Nuevo Servicio
-        </button>
-        <input type="text" class="buscar-input" id="servicios-buscar" placeholder="Buscar servicios..." oninput="filtrarTabla('servicios')">
+<div data-seccion="servicios">
+    <h2>Servicios</h2>
+
+    <div class="admin-actions" style="justify-content: flex-start;">
+        <button class="btn-guardar" id="btn-anadir">Añadir</button>
+        <button class="btn-eliminar" id="btn-eliminar">Eliminar</button>
     </div>
 
-    <div class="admin-card-list" id="servicios-lista">
-        <div class="msj-vacio">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-            <p>Sin servicios registrados</p>
-        </div>
-    </div>
+    <div class="admin-form form-servicio" id="form-servicio">
+        <h3>Servicio</h3>
 
-    <div class="admin-form" id="form-servicio" style="display:none">
-        <h2 id="servicio-form-titulo">Nuevo Servicio</h2>
-        <input type="hidden" id="servicio-id">
         <div class="admin-form-group">
-            <label>Nombre <span class="req">*</span></label>
+            <label>Nombre</label>
             <input type="text" id="servicio-nombre" placeholder="Nombre del servicio">
         </div>
+
         <div class="admin-form-group">
             <label>Descripción</label>
             <textarea id="servicio-descripcion" placeholder="Descripción del servicio"></textarea>
         </div>
+
         <div class="admin-form-group">
             <label>Imagen</label>
-            <div class="upload-area" onclick="document.getElementById('servicio-img-input').click()">
-                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-                <p>Haz clic para seleccionar imagen</p>
-                <span class="sub-texto">JPG, JPEG, PNG, WEBP</span>
+            <div class="upload-area" id="servicio-upload-area">
+                <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                <span>Haz clic para seleccionar una imagen</span>
+                <input type="file" id="servicio-input" accept="image/*">
             </div>
-            <input type="file" id="servicio-img-input" accept="image/*" style="display:none">
-            <div class="upload-preview" id="servicio-img-preview" style="display:none">
-                <img src="" alt="preview">
-                <div class="info"><p id="servicio-img-nombre"></p></div>
-            </div>
-            <input type="hidden" id="servicio-imagen">
         </div>
+        <div class="preview-grid" id="servicio-preview"></div>
+
         <div class="admin-actions">
-            <button class="btn-guardar" onclick="guardarServicio()">Guardar Servicio</button>
-            <button class="btn-cancelar" onclick="cerrarFormServicio()">Cancelar</button>
+            <button class="btn-guardar" onclick="api_servicios.guardar()">Guardar</button>
         </div>
     </div>
-</section>
+
+    <div class="eliminar-lista" id="eliminar-lista"></div>
+</div>

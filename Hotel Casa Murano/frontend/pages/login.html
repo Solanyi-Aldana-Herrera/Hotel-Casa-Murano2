@@ -112,7 +112,7 @@
     try {
 
         const respuesta = await fetch(
-            'http://localhost:3000/login',
+            '/login',
             {
                 method: 'POST',
                 headers: {
@@ -129,7 +129,7 @@
 
         if (datos.success) {
 
-            alert('Bienvenido al sistema');
+            sessionStorage.setItem('auth_admin', '1');
 
             window.location.href =
                 'admin.html';

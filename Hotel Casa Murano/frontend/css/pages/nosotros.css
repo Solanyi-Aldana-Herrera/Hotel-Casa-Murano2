@@ -6,6 +6,7 @@
   margin: 50px auto;
   padding: 50px 20px;
   min-height: 600px;
+  background: #fff;
 }
 
 .texto_conocenos {
@@ -25,9 +26,9 @@
 }
 
 .intro h2 {
-  font-family: var(--font-decorative);
+  font-family: "Pinyon Script";
   font-size: 60.3px;
-  color: var(--gold);
+  color: #ab9025;
   font-weight: 400;
   margin: 0;
 }
@@ -45,7 +46,7 @@
   content: url("/frontend/images/decoracion/linea.png");
   display: block;
   font-size: 30px;
-  color: var(--gold);
+  color: #ab9025;
   margin-top: 0;
   letter-spacing: 10px;
 }
@@ -97,6 +98,7 @@
   max-width: 100%;
   margin-bottom: 80px;
   margin-top: 150px;
+  background: #fff;
 }
 
 .bloque-mision,
@@ -231,7 +233,7 @@
 #segunda h4 {
   font-family: var(--font-body);
   font-size: 30.3px;
-  color: var(--gold);
+  color: #ab9025;
   margin-bottom: 20px;
   font-weight: 400;
 }
@@ -294,4 +296,17 @@
   .mision, .vision, .valores { padding: 20px; }
   .imagen-mision, .imagen-vision, .imagen-valores { flex: 0 0 120px; }
   .bloque-mision img, .bloque-vision img, .bloque-valores img { width: 120px; height: 120px; }
+}
+
+@media (max-width: 375px) {
+  #primera { padding: 16px 8px; gap: 16px; }
+  .intro h2 { font-size: 24px; }
+  .intro h3 { font-size: 15px; }
+  .texto_nosotros p { font-size: 14px; }
+  #segunda { padding: 20px 8px; gap: 20px; }
+  #segunda h4 { font-size: 17px; }
+  #segunda p { font-size: 14px; }
+  .mision, .vision, .valores { padding: 14px; }
+  .imagen-mision, .imagen-vision, .imagen-valores { flex: 0 0 80px; }
+  .bloque-mision img, .bloque-vision img, .bloque-valores img { width: 80px; height: 80px; }
 }

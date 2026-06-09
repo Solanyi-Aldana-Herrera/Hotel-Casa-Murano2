@@ -1,75 +1,182 @@
-<link rel="stylesheet" href="/frontend/css/pages/admin-habitaciones.css">
-<section id="habitaciones" class="seccion-admin active">
-    <h1>Administrar Habitaciones</h1>
-    <p class="descripcion-seccion">Agrega, edita y elimina habitaciones del hotel.</p>
+<style>
+    [data-seccion="habitaciones"] .admin-form textarea {
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 6px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(0,0,0,0.3);
+        color: var(--text-white);
+        font-family: var(--font-body);
+        font-size: 0.95rem;
+        resize: vertical;
+        min-height: 80px;
+        transition: var(--transition);
+    }
+    [data-seccion="habitaciones"] .admin-form textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+    [data-seccion="habitaciones"] .admin-form input[type="number"] {
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 6px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(0,0,0,0.3);
+        color: var(--text-white);
+        font-family: var(--font-body);
+        font-size: 0.95rem;
+        transition: var(--transition);
+    }
+    [data-seccion="habitaciones"] .admin-form input[type="number"]:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+    .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    .preview-item {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        aspect-ratio: 16 / 9;
+        background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.08);
+        max-width: 200px;
+    }
+    .preview-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .btn-remove-img {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: rgba(231, 76, 60, 0.9);
+        color: white;
+        border: none;
+        font-size: 0.75rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+        line-height: 1;
+    }
+    .btn-remove-img:hover {
+        background: #e74c3c;
+        transform: scale(1.1);
+    }
+    .eliminar-lista {
+        margin-top: 1.5rem;
+        display: none;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1rem;
+    }
+    .eliminar-lista.mostrar {
+        display: grid;
+    }
+    .eliminar-item {
+        background: rgba(0,0,0,0.2);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 8px;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+    .eliminar-item-info h4 {
+        margin: 0 0 4px;
+        color: var(--text-white);
+        font-family: var(--font-body);
+        font-size: 1rem;
+    }
+    .eliminar-item-info p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+    .btn-eliminar-item {
+        background: rgba(231,76,60,0.9);
+        color: white;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-family: var(--font-body);
+        font-size: 0.85rem;
+        transition: var(--transition);
+        white-space: nowrap;
+    }
+    .btn-eliminar-item:hover {
+        background: #e74c3c;
+    }
+    .form-habitacion {
+        display: none;
+    }
+    .form-habitacion.mostrar {
+        display: block;
+    }
+</style>
 
-    <div class="admin-toolbar">
-        <button class="btn-agregar" onclick="abrirFormHabitacion()">
-            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-            Nueva Habitación
-        </button>
-        <input type="text" class="buscar-input" id="habitaciones-buscar" placeholder="Buscar habitaciones..." oninput="filtrarTabla('habitaciones')">
+<div data-seccion="habitaciones">
+    <h2>Habitaciones</h2>
+
+    <div class="admin-actions" style="justify-content: flex-start;">
+        <button class="btn-guardar" id="btn-anadir">Añadir</button>
+        <button class="btn-eliminar" id="btn-eliminar">Eliminar</button>
     </div>
 
-    <div class="admin-table-wrap">
-        <table class="admin-table" id="tabla-habitaciones">
-            <thead>
-                <tr>
-                    <th>Imagen</th>
-                    <th>Nombre</th>
-                    <th>Precio</th>
-                    <th>Capacidad</th>
-                    <th>Estado</th>
-                    <th class="th-acciones">Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="habitaciones-body"><tr><td colspan="6" class="vacio">Sin datos</td></tr></tbody>
-        </table>
-    </div>
+    <div class="admin-form form-habitacion" id="form-habitacion">
+        <h3>Habitación</h3>
 
-    <div class="admin-form" id="form-habitacion" style="display:none">
-        <h2 id="habitacion-form-titulo">Nueva Habitación</h2>
-        <input type="hidden" id="habitacion-id">
         <div class="admin-form-group">
-            <label>Nombre <span class="req">*</span></label>
+            <label>Nombre</label>
             <input type="text" id="habitacion-nombre" placeholder="Nombre de la habitación">
         </div>
+
         <div class="admin-form-group">
-            <label>Descripción</label>
-            <textarea id="habitacion-descripcion" placeholder="Descripción detallada"></textarea>
+            <label>Descripción primera</label>
+            <textarea id="habitacion-descripcion-primera" placeholder="Descripción corta para la tarjeta"></textarea>
         </div>
+
         <div class="admin-form-group">
-            <label>Precio por noche <span class="req">*</span></label>
-            <input type="number" id="habitacion-precio" step="0.01" placeholder="0.00">
+            <label>Descripción segunda</label>
+            <textarea id="habitacion-descripcion-segunda" placeholder="Descripción detallada para el modal"></textarea>
         </div>
-        <div class="admin-form-group">
-            <label>Capacidad</label>
-            <input type="number" id="habitacion-capacidad" placeholder="Ej: 2">
-        </div>
+
         <div class="admin-form-group">
             <label>Imagen</label>
-            <div class="upload-area" onclick="document.getElementById('habitacion-img-input').click()">
-                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-                <p>Haz clic para seleccionar imagen</p>
-                <span class="sub-texto">JPG, JPEG, PNG, WEBP</span>
+            <div class="upload-area" id="habitacion-upload-area">
+                <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                <span>Haz clic para seleccionar una imagen</span>
+                <input type="file" id="habitacion-input" accept="image/*">
             </div>
-            <input type="file" id="habitacion-img-input" accept="image/*" style="display:none">
-            <div class="upload-preview" id="habitacion-img-preview" style="display:none">
-                <img src="" alt="preview">
-                <div class="info"><p id="habitacion-img-nombre"></p></div>
-            </div>
-            <input type="hidden" id="habitacion-imagen">
         </div>
+        <div class="preview-grid" id="habitacion-preview"></div>
+
         <div class="admin-form-group">
-            <label>Estado</label>
-            <select id="habitacion-estado">
-                <option value="1">Disponible</option>
-                <option value="0">No disponible</option>
-            </select>
+            <label>Precio</label>
+            <input type="number" id="habitacion-precio" placeholder="Ej: 250000" min="0">
         </div>
+
+        <div class="admin-form-group">
+            <label>Capacidad</label>
+            <input type="number" id="habitacion-capacidad" placeholder="Ej: 2" min="1">
+        </div>
+
         <div class="admin-actions">
-            <button class="btn-guardar" onclick="guardarHabitacion()">Guardar Habitación</button>
-            <button class="btn-cancelar" onclick="cerrarFormHabitacion()">Cancelar</button>
+            <button class="btn-guardar" onclick="api_habitaciones.guardar()">Guardar</button>
         </div>
     </div>
-</section>
+
+    <div class="eliminar-lista" id="eliminar-lista"></div>
+</div>

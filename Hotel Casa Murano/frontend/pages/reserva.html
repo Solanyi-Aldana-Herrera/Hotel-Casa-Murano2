@@ -3,6 +3,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hotel Casa Murano</title>
     
     <link rel="icon" href="/frontend/images/logo/favicon.png" type="image/png" sizes="16x16">
@@ -23,7 +24,10 @@
              
             <nav class="navbar">
                 <div class="logo">
-                    <img src="/frontend/images/logo/LogoConNombre.png" alt="logo">
+                    <img loading="lazy" src="/frontend/images/logo/LogoConNombre.png" alt="logo">
+                </div>
+                <div class="hamburger" onclick="this.classList.toggle('active');document.querySelector('.navbar ul').classList.toggle('show')">
+                    <span></span><span></span><span></span>
                 </div>
                 <ul class="nav-links">
                     <li><a href="#habitaciones">Selecciona la habitación</a></li>
@@ -67,11 +71,11 @@
                             <div class="ocupacion-selector" onclick="toggleRvaOcupacion()">
                                 <div class="icon-group">
                                     <div class="icon-wrapper">
-                                        <img src="/frontend/images/iconos/Adulto.png" alt="Adulto"> 
+                                        <img loading="lazy" src="/frontend/images/iconos/Adulto.png" alt="Adulto"> 
                                     </div>
                                     <span id="rva-num-adultos">1</span>
                                     <div class="icon-wrapper">
-                                        <img src="/frontend/images/iconos/Niño.png" alt="Niño"> 
+                                        <img loading="lazy" src="/frontend/images/iconos/Niño.png" alt="Niño"> 
                                     </div>
                                     <span id="rva-num-ninos">1</span>
                                 </div>
@@ -207,7 +211,7 @@
         <div class="pie-pagina">
             <div class="logo">
                 <a href="/frontend/index.html" class="enlace-logo">
-                    <img src="/frontend/images/logo/LogoConNombre.png" alt="logo">
+                    <img loading="lazy" src="/frontend/images/logo/LogoConNombre.png" alt="logo">
                 </a>
             </div>
         
@@ -216,11 +220,11 @@
                     <h4>SIGUENOS</h4>
                     <div class="contenedor-iconos">
                         <a href="https://www.facebook.com/hotelcasamuraneivahuila/" target="_blank" class="icono-social">
-                            <img src="/frontend/images/social/Facebook Icon.png" alt="Facebook">
+                            <img loading="lazy" src="/frontend/images/social/Facebook Icon.png" alt="Facebook">
                         </a>
 
                         <a href="https://www.instagram.com/p/DXMbZM8kbkD/" target="_blank" class="icono-social">
-                            <img src="/frontend/images/social/Instagram.png" alt="Instagram">
+                            <img loading="lazy" src="/frontend/images/social/Instagram.png" alt="Instagram">
                         </a>
                     </div>      
                 </div>
@@ -231,13 +235,13 @@
         
             <div class="informacion">
                 <div class="info-item1">
-                    <h4>DIRECCIÓN:</h4><P>Avenida Circunvalar No 6 -32,</P><br><br>
+                    <h4>DIRECCIÓN:</h4><P id="footer-direccion">Avenida Circunvalar No 6 -32,</P><br><br>
                 </div>
                 <div class="info-item2">
-                    <h4>EMAIL:</h4><P>hotelcasamuranoneivahuila@hotmail.com</P><br>
+                    <h4>EMAIL:</h4><P id="footer-email">hotelcasamuranoneivahuila@hotmail.com</P><br>
                 </div>
                 <div class="info-item3">
-                    <h4>TELEFONO:</h4><P>3144785524</P><br><br>
+                    <h4>TELEFONO:</h4><P id="footer-telefono">3144785524</P><br><br>
                 </div>
                 
             </div>
@@ -255,5 +259,6 @@
 
     <!-- Aquí enlazarás tu archivo JS -->
     <script src="/frontend/js/reserva.js"></script>
+    <script src="/frontend/js/main.js"></script>
 </body>
 </html>

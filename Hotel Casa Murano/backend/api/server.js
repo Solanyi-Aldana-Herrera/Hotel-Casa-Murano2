@@ -16,20 +16,15 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use('/frontend', express.static(path.join(__dirname, '..', '..', 'frontend')));
 
-const conexion = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'db_hotel',
-    port: 3306});
-
-conexion.connect((error) => {
-    if (error) {
-        console.error('Error al conectar MySQL:', error);
-        return;
-    }
-
-    console.log('MySQL conectado correctamente');
+const conexion = mysql.createPool({
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'db_hotel',
+    port: parseInt(process.env.DB_PORT) || 3306,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
 app.get('/', (req, res) => {
@@ -85,8 +80,8 @@ app.post('/login', (req, res) => {
 // =========================================================================
 const transportador = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
+    port: 587,
+    secure: false,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
@@ -117,7 +112,7 @@ app.post('/recuperar-contrasena', (req, res) => {
 
         const adminId = resultados[0].id;
         const token = crypto.randomBytes(32).toString('hex');
-        const expiracion = new Date(Date.now() + 300000);
+        const expiracion = new Date(Date.now() + 1800000);
 
         const sqlGuardarToken = 'UPDATE administrador SET token_recuperacion = ?, expiracion_token = ? WHERE id = ?';
 
@@ -127,7 +122,7 @@ app.post('/recuperar-contrasena', (req, res) => {
                 return res.status(500).json({ success: false, mensaje: 'Error al generar el enlace de recuperación.' });
             }
 
-            const linkRecuperacion = `http://localhost:3000/frontend/pages/restablecer.html?token=${token}`;
+            const linkRecuperacion = `${process.env.APP_URL || 'http://localhost:3000'}/frontend/pages/restablecer.html?token=${token}`;
 
             const opcionesCorreo = {
                 from: `Hotel Casa Murano <${process.env.EMAIL_USER}>`,
@@ -267,15 +262,17 @@ app.post('/api/upload', upload.single('imagen'), (req, res) => {
 // =========================================================================
 
 const TABLAS = {
-    bienvenida:           { insertar: ['titulo','subtitulo','descripcion','despedida','imagen'] },
-    galeria:              { insertar: ['titulo','imagen'] },
-    habitaciones:         { insertar: ['nombre','descripcion','precio','imagen','capacidad','estado'] },
-    iconos_nosotros:      { insertar: ['nombre','icono','descripcion'] },
-    informacion_contacto: { insertar: ['direccion','celular','email','mapa_iframe'] },
-    mensajes_contacto:    { insertar: ['nombre','correo','telefono','asunto','mensaje','leido'] },
-    nosotros:             { insertar: ['titulo','subtitulo','descripcion','imagen','mision','mision_imagen','vision','vision_imagen','valores','valores_imagen'] },
-    servicios:            { insertar: ['nombre','descripcion','imagen'] },
-    slider_inicio:        { insertar: ['titulo','descripcion','imagen','orden_slider','activo'] }
+    bienvenida:           { insertar: ['imagen'] },
+    galeria:              { insertar: ['imagen'] }, // Tu tabla 'galeria' solo tiene id e imagen
+    habitaciones:         { insertar: ['nombre', 'descripcion_primera', 'descripcion_segunda', 'imagen', 'precio', 'capacidad'] }, 
+    informacion_contacto: { insertar: ['celular', 'email', 'direccion', 'mapa_iframe'] },
+    nosotros:             { insertar: ['imagen'] }, // Tu tabla 'nosotros' solo tiene id e imagen
+    mision:               { insertar: ['descripcion', 'imagen'] }, // Tabla independiente
+    valores:              { insertar: ['descripcion', 'imagen'] }, // Tabla independiente
+    servicios:            { insertar: ['nombre', 'descripcion', 'imagen'] },
+    sliders:              { insertar: ['imagen'] },
+    vision:               { insertar: ['descripcion', 'imagen'] }, // Tabla independiente
+    redes:                { insertar: ['facebook', 'instagram', 'whatsapp'] }
 };
 
 // GET /api/:tabla — Listar todos los registros

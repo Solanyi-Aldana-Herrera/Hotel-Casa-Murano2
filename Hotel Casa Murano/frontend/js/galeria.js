@@ -35,6 +35,24 @@ window.onclick = function (event) {
   }
 };
 
+// CARGAR GALERÍA DESDE LA API
+async function cargarGaleria() {
+    try {
+        const r = await fetch('/api/galeria?_=' + Date.now());
+        const json = await r.json();
+        if (!json.success) return;
+
+        const grid = document.getElementById('gallery-grid');
+        if (!grid) return;
+
+        grid.innerHTML = json.datos.map(g => `
+            <img src="${g.imagen}" alt="galeria" onclick="abrirImagen(this.src)">
+        `).join('');
+    } catch (e) {}
+}
+
+document.addEventListener('DOMContentLoaded', cargarGaleria);
+
 document.getElementById("modalPrev").addEventListener("click", function () {
   const imagenes = document.querySelectorAll(".gallery-grid img");
   const ribbon = document.getElementById("modalRibbon");

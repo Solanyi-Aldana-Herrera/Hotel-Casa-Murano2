@@ -1,50 +1,44 @@
 <link rel="stylesheet" href="/frontend/css/pages/admin-inicio.css">
-<section id="inicio" class="seccion-admin active">
-    <h1>Administrar Inicio</h1>
-    <p class="descripcion-seccion">Gestiona el texto de bienvenida, la imagen lateral y el carrusel de fotos del slider.</p>
 
-    <div class="admin-form" id="form-bienvenida">
-        <h2>Contenido de Bienvenida</h2>
+<style>
+    [data-seccion="inicio"] .btn-guardar {
+        padding: 12px 32px;
+        background: var(--primary);
+        color: var(--bg-dark);
+        border: none;
+        border-radius: 6px;
+        font-family: var(--font-heading);
+        font-size: 1.05rem;
+        cursor: pointer;
+        transition: var(--transition);
+        font-weight: 700;
+    }
+    [data-seccion="inicio"] .btn-guardar:hover {
+        background: var(--primary-light);
+        transform: translateY(-1px);
+    }
+</style>
 
+<div data-seccion="inicio">
+    <h2>Inicio</h2>
+
+    <div class="admin-form" id="form-sliders">
+        <h3>Contenido Principal (Slider)</h3>
+        <p style="color:var(--text-muted);font-family:var(--font-body);margin-bottom:1rem;font-size:0.9rem;">
+            Máximo 5 imágenes. La primera será la imagen principal.
+        </p>
         <div class="admin-form-group">
-            <label>Título</label>
-            <input type="text" id="bienvenida-titulo" placeholder="Título principal (ej: Bienvenidos)">
+            <label>Imágenes del Slider</label>
+            <label class="upload-area" id="sliders-upload-area" for="sliders-input">
+                <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                <span>Haz clic para seleccionar imágenes (máx 5)</span>
+            </label>
+            <input type="file" id="sliders-input" accept="image/*" multiple style="display:none">
         </div>
-
-        <div class="admin-form-group">
-            <label>Subtítulo</label>
-            <input type="text" id="bienvenida-subtitulo" placeholder="Subtítulo (ej: Hotel Casa Murano)">
-        </div>
-
-        <div class="admin-form-group">
-            <label>Descripción</label>
-            <textarea id="bienvenida-descripcion" placeholder="Descripción de bienvenida" rows="4"></textarea>
-        </div>
-
-        <div class="admin-form-group">
-            <label>Despedida</label>
-            <input type="text" id="bienvenida-despedida" placeholder="Frase de despedida (ej: La Gerencia de Hotel Casa Murano)">
-        </div>
-
-        <div class="admin-form-group">
-            <label>Imagen Bienvenida</label>
-            <div class="upload-area" onclick="document.getElementById('bienvenida-img-input').click()">
-                <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-                <p>Haz clic para seleccionar imagen</p>
-                <span class="sub-texto">JPG, JPEG, PNG, WEBP</span>
-            </div>
-            <input type="file" id="bienvenida-img-input" accept="image/*" style="display:none">
-            <div class="upload-preview" id="bienvenida-img-preview" style="display:none">
-                <img src="" alt="preview">
-                <div class="info"><p id="bienvenida-img-nombre"></p></div>
-                <button type="button" class="btn-remove-img" onclick="removerBienvenidaImg()" title="Quitar imagen">&times;</button>
-            </div>
-            <input type="hidden" id="bienvenida-imagen">
-        </div>
-
+        <div class="sliders-preview-grid" id="sliders-preview"></div>
 
         <div class="admin-actions">
-            <button class="btn-guardar" onclick="guardarBienvenida()">Guardar</button>
+            <button class="btn-guardar" onclick="api_inicio.guardarTodo()">Guardar</button>
         </div>
     </div>
-</section>
+</div>

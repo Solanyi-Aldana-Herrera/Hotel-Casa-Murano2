@@ -77,14 +77,14 @@
   align-items: center;
   gap: 15px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  border: 3px solid var(--primary-light);
+  border: 3px solid #27d0dc;
   margin-top: 200px;
 }
 
 .label-reserva {
   font-family: var(--font-body);
   font-size: 15.6px;
-  color: var(--primary-light);
+  color: #27d0dc;
   font-weight: bold;
   display: block;
   margin-bottom: 5px;
@@ -192,7 +192,7 @@
   display: flex;
   gap: 15px;
   padding: 10px 30px;
-  border: 2px solid var(--primary-light);
+  border: 2px solid #27d0dc;
   border-radius: 35px;
   margin-right: 10px;
   align-items: flex-start;
@@ -230,8 +230,8 @@ main {
 }
 
 .titulo h2 {
-  font-family: var(--font-decorative);
-  color: var(--gold);
+  font-family: "Pinyon Script", serif;
+  color: #ab9025;
   font-size: 60.3px;
   margin: 0;
   font-weight: 400;
@@ -239,7 +239,7 @@ main {
 
 .titulo h3 {
   font-family: var(--font-body);
-  color: var(--bg-black);
+  color: black;
   font-size: 30.3px;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -250,7 +250,7 @@ main {
   content: url("/frontend/images/decoracion/linea.png");
   display: block;
   font-size: 30px;
-  color: var(--gold);
+  color: #ab9025;
   margin-top: 0;
   letter-spacing: 10px;
 }
@@ -275,7 +275,7 @@ main {
 .texto_bienvenida h4 {
   font-family: var(--font-heading);
   font-size: 23.3px;
-  color: var(--gold);
+  color: #ab9025;
   margin: 0;
 }
 
@@ -378,7 +378,7 @@ main {
 
 @media (max-width: 480px) {
   .nombrehotel {
-    margin-top: 150px;
+    margin-top: 120px;
   }
 
   .nombrehotel h1 {
@@ -393,6 +393,7 @@ main {
     padding: 12px;
     border-radius: 25px;
     gap: 10px;
+    margin-top: 80px;
   }
 
   .fechas-container {
@@ -436,6 +437,78 @@ main {
 
   .texto_bienvenida p {
     font-size: 18px;
+  }
+}
+
+@media (max-width: 375px) {
+  .nombrehotel {
+    margin-top: 80px;
+  }
+
+  .nombrehotel h1 {
+    font-size: 24px;
+    letter-spacing: 3px;
+  }
+
+  .nombrehotel h2 {
+    font-size: 16px;
+    letter-spacing: 3px;
+  }
+
+  .reserva-box {
+    margin-top: 50px;
+    padding: 10px;
+    border-radius: 20px;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .label-reserva {
+    font-size: 10px;
+  }
+
+  #dia-entrada, #dia-salida {
+    font-size: 16px;
+  }
+
+  #mes-entrada, #mes-salida {
+    font-size: 11px;
+  }
+
+  .icon-group span {
+    font-size: 14px;
+  }
+
+  .icon-wrapper {
+    width: 22px;
+    height: 22px;
+  }
+
+  .btn-reserva-home {
+    font-size: 14px;
+    padding: 5px 12px;
+  }
+
+  .titulo h2 {
+    font-size: 28px;
+  }
+
+  .titulo h3 {
+    font-size: 18px;
+  }
+
+  .texto_bienvenida p {
+    font-size: 15px;
+  }
+
+  .navegador {
+    height: auto;
+    min-height: 70px;
+  }
+
+  .navegador .logo img {
+    height: 40px;
   }
 }
 

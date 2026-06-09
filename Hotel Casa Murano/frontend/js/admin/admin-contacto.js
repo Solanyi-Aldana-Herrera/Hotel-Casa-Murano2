@@ -1,83 +1,77 @@
-// ============================================================
-// CONTACTO — INFORMACIÓN
-// ============================================================
+var api_contacto = (() => {
 
-async function cargarInfoContacto() {
-  const res = await apiGet('informacion_contacto');
-  if (res.success && res.datos.length > 0) {
-    const d = res.datos[0];
-    document.getElementById('contacto-direccion').value = d.direccion || '';
-    document.getElementById('contacto-celular').value = d.celular || '';
-    document.getElementById('contacto-email').value = d.email || '';
-    document.getElementById('contacto-mapa').value = d.mapa_iframe || '';
-  }
-}
+    let idExistente = null;
 
-async function guardarInfoContacto() {
-  const data = {
-    direccion: document.getElementById('contacto-direccion').value,
-    celular: document.getElementById('contacto-celular').value,
-    email: document.getElementById('contacto-email').value,
-    mapa_iframe: document.getElementById('contacto-mapa').value
-  };
-  const res = await apiGet('informacion_contacto');
-  let r;
-  if (res.success && res.datos.length > 0) {
-    r = await apiPut('informacion_contacto', res.datos[0].id, data);
-  } else {
-    r = await apiPost('informacion_contacto', data);
-  }
-  if (r.success) toast('Información guardada', 'exito');
-  else toast('Error al guardar', 'error');
-}
+    function init() {
+        const ids = ['form-contacto', 'contacto-celular', 'contacto-email', 'contacto-direccion', 'contacto-mapa'];
+        const allExist = ids.every(id => document.getElementById(id));
+        if (!allExist) return setTimeout(init, 50);
 
-// ============================================================
-// CONTACTO — MENSAJES
-// ============================================================
+        idExistente = null;
+        ['contacto-celular', 'contacto-email', 'contacto-direccion', 'contacto-mapa'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
 
-async function cargarMensajes() {
-  const tbody = document.getElementById('mensajes-body');
-  mostrarCargando(tbody);
-  const res = await apiGet('mensajes_contacto');
-  if (!res.success || res.datos.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" class="vacio">Sin mensajes recibidos</td></tr>';
-    return;
-  }
-  tbody.innerHTML = res.datos.map(m => `
-    <tr>
-      <td>${m.nombre || '—'}</td>
-      <td>${m.correo || '—'}</td>
-      <td>${m.asunto || '—'}</td>
-      <td>${m.fecha_envio ? new Date(m.fecha_envio).toLocaleDateString('es-CO') : '—'}</td>
-      <td><span class="badge ${m.leido ? 'badge-leido' : 'badge-nuevo'}">${m.leido ? 'Leído' : 'Nuevo'}</span></td>
-      <td class="td-acciones">
-        <div class="acciones">
-          <button class="btn-accion editar" onclick="verMensaje(${m.id})" title="Ver">
-            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-          </button>
-        </div>
-      </td>
-    </tr>
-  `).join('');
-}
+        cargarExistente();
+    }
 
-async function verMensaje(id) {
-  const res = await apiGet('mensajes_contacto', id);
-  if (!res.success) return;
-  const m = res.dato;
-  const info = [
-    `De: ${m.nombre} (${m.correo} - ${m.telefono || 'sin teléfono'})`,
-    `Asunto: ${m.asunto || '—'}`,
-    `Fecha: ${m.fecha_envio ? new Date(m.fecha_envio).toLocaleString('es-CO') : '—'}`,
-    `\nMensaje:\n${m.mensaje}`
-  ].join('\n');
-  alert(info);
-  if (!m.leido) {
-    await apiPut('mensajes_contacto', id, { leido: 1 });
-    cargarMensajes();
-  }
-}
+    async function cargarExistente() {
+        try {
+            const json = await apiGet('informacion_contacto');
+            if (json.success && json.datos.length > 0) {
+                idExistente = json.datos[0].id;
+            }
+        } catch (e) {}
+    }
 
-// Init
-cargarInfoContacto();
-cargarMensajes();
+    function extraerUrlIframe(valor) {
+        const match = valor.match(/src=["']([^"']+)["']/);
+        return match ? match[1] : valor;
+    }
+
+    async function guardar() {
+        const celular = document.getElementById('contacto-celular').value.trim();
+        const email = document.getElementById('contacto-email').value.trim();
+        const direccion = document.getElementById('contacto-direccion').value.trim();
+        const mapa_iframe = extraerUrlIframe(document.getElementById('contacto-mapa').value.trim());
+
+        if (!celular || !email || !direccion || !mapa_iframe) {
+            toast('Todos los campos son obligatorios', 'warning');
+            return;
+        }
+
+        const datos = { celular, email, direccion, mapa_iframe };
+
+        try {
+            let res;
+            if (idExistente) {
+                res = await apiPut('informacion_contacto', idExistente, datos);
+            } else {
+                res = await apiPost('informacion_contacto', datos);
+            }
+
+            if (!res.success) {
+                toast('Error al guardar la información de contacto', 'error');
+                return;
+            }
+
+            if (res.id) idExistente = res.id;
+
+            limpiarFormulario();
+            toast('Información de contacto guardada correctamente', 'success');
+
+        } catch (e) {
+            toast('Error al guardar: ' + e.message, 'error');
+        }
+    }
+
+    function limpiarFormulario() {
+        ['contacto-celular', 'contacto-email', 'contacto-direccion', 'contacto-mapa'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        idExistente = null;
+    }
+
+    return { init, guardar };
+
+})();

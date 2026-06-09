@@ -8,11 +8,11 @@
 
 #galeria h2 {
   text-align: center;
-  font-family: var(--font-decorative);
+  font-family: "Pinyon Script";
   font-size: 60.3px;
   margin: 0;
   font-weight: 400;
-  color: var(--gold);
+  color: #ab9025;
 }
 
 #galeria h3 {
@@ -31,7 +31,7 @@
   content: url("/frontend/images/decoracion/linea.png");
   display: block;
   font-size: 30px;
-  color: var(--gold);
+  color: #ab9025;
   margin-top: 0;
   letter-spacing: 10px;
 }
@@ -92,6 +92,24 @@
   .modal-next { right: 5px; }
   .modal-prev, .modal-next { font-size: 22px; padding: 6px 10px; }
   .modal-ribbon img { width: 50px; height: 38px; }
+}
+
+@media (max-width: 375px) {
+  #galeria h2 {
+    font-size: 24px;
+  }
+
+  #galeria h3 {
+    font-size: 15px;
+    margin-bottom: 24px;
+  }
+
+  .gallery-grid img {
+    height: 130px;
+  }
+
+  .modal-prev, .modal-next { font-size: 18px; padding: 4px 8px; }
+  .modal-ribbon img { width: 40px; height: 30px; }
 }
 
 /* =========================
@@ -175,6 +193,6 @@
 
 .modal-ribbon img.active {
   opacity: 1;
-  border-color: var(--gold);
+  border-color: #ab9025;
   transform: scale(1.05);
 }

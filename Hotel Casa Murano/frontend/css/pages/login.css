@@ -241,3 +241,60 @@ body {
     background-position: center;
   }
 }
+
+@media (max-width: 480px) {
+  .right-side {
+    padding: 24px 20px;
+  }
+
+  .login-box {
+    max-width: 100%;
+  }
+
+  .login-header h2 {
+    font-size: 1.6rem;
+  }
+
+  .login-header p {
+    font-size: 0.75rem;
+    margin-bottom: 24px;
+  }
+
+  .input-group {
+    margin-bottom: 18px;
+  }
+
+  .input-wrapper input {
+    padding: 12px 14px 12px 40px;
+    font-size: 0.82rem;
+  }
+
+  .btn-submit {
+    padding: 12px;
+    font-size: 0.85rem;
+  }
+
+  .brand-title {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 375px) {
+  .right-side {
+    padding: 16px 14px;
+  }
+
+  .login-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .input-wrapper input {
+    padding: 10px 12px 10px 36px;
+    font-size: 0.8rem;
+  }
+
+  .btn-submit {
+    padding: 10px;
+    font-size: 0.8rem;
+  }
+}

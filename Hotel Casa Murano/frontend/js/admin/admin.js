@@ -1,8 +1,32 @@
 const API_BASE = '';
 
-if (!sessionStorage.getItem('auth_admin')) {
-    window.location.replace('/frontend/pages/login.html');
+function verificarAuth() {
+    if (!sessionStorage.getItem('auth_admin')) {
+        window.location.replace('/frontend/pages/login.html');
+        return;
+    }
+    const [entry] = performance.getEntriesByType('navigation');
+    if (entry?.type === 'back_forward') {
+        sessionStorage.removeItem('auth_admin');
+        window.location.replace('/frontend/pages/login.html');
+    }
 }
+
+verificarAuth();
+
+window.addEventListener('pageshow', function (e) {
+    if (e.persisted) {
+        sessionStorage.removeItem('auth_admin');
+        window.location.replace('/frontend/pages/login.html');
+    } else {
+        verificarAuth();
+    }
+});
+
+history.pushState(null, null, location.href);
+window.addEventListener('popstate', function () {
+    history.pushState(null, null, location.href);
+});
 
 let confirmCallback = null;
 
@@ -98,38 +122,57 @@ function toast(mensaje, tipo = 'success') {
     }, 3000);
 }
 
+function getAuthHeaders(extra = {}) {
+    const token = sessionStorage.getItem('auth_admin');
+    return token ? { ...extra, 'Authorization': 'Bearer ' + token } : extra;
+}
+
 async function apiGet(tabla) {
-    const r = await fetch(`${API_BASE}/api/${tabla}?_=${Date.now()}`);
+    const r = await fetch(`${API_BASE}/api/${tabla}?_=${Date.now()}`, {
+        headers: getAuthHeaders()
+    });
+    if (r.status === 401) { sessionStorage.removeItem('auth_admin'); window.location.replace('/frontend/pages/login.html'); return; }
     return r.json();
 }
 
 async function apiPost(tabla, datos) {
     const r = await fetch(`${API_BASE}/api/${tabla}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify(datos)
     });
+    if (r.status === 401) { sessionStorage.removeItem('auth_admin'); window.location.replace('/frontend/pages/login.html'); return; }
     return r.json();
 }
 
 async function apiPut(tabla, id, datos) {
     const r = await fetch(`${API_BASE}/api/${tabla}/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify(datos)
     });
+    if (r.status === 401) { sessionStorage.removeItem('auth_admin'); window.location.replace('/frontend/pages/login.html'); return; }
     return r.json();
 }
 
 async function apiDelete(tabla, id) {
-    const r = await fetch(`${API_BASE}/api/${tabla}/${id}`, { method: 'DELETE' });
+    const r = await fetch(`${API_BASE}/api/${tabla}/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+    });
+    if (r.status === 401) { sessionStorage.removeItem('auth_admin'); window.location.replace('/frontend/pages/login.html'); return; }
     return r.json();
 }
 
 async function subirArchivo(file) {
     const fd = new FormData();
     fd.append('imagen', file);
-    const r = await fetch(`${API_BASE}/api/upload`, { method: 'POST', body: fd });
+    const r = await fetch(`${API_BASE}/api/upload`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: fd
+    });
+    if (r.status === 401) { sessionStorage.removeItem('auth_admin'); window.location.replace('/frontend/pages/login.html'); return; }
     return r.json();
 }
 

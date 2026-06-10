@@ -41,8 +41,32 @@ CREATE TABLE `administrador` (
 
 LOCK TABLES `administrador` WRITE;
 /*!40000 ALTER TABLE `administrador` DISABLE KEYS */;
-INSERT INTO `administrador` VALUES (2,'admin2','aldanaherrerasol@gmail.com',NULL,NULL,'Johany18','2026-06-03 15:30:35');
+INSERT INTO `administrador` VALUES (2,'admin2','aldanaherrerasol@gmail.com',NULL,NULL,'$2b$10$bWQqMwqMiOor2b41mmsMmOuy0waVSP/Oky5Qc2oIlzyK8tumCz7Gy','2026-06-03 15:30:35');
+-- ⚠️ Contraseña: Johany18. Para regenerar el hash: node backend/api/seed-admin.js
 /*!40000 ALTER TABLE `administrador` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `bienvenida`
+--
+
+DROP TABLE IF EXISTS `bienvenida`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `bienvenida` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `imagen` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bienvenida`
+--
+
+LOCK TABLES `bienvenida` WRITE;
+/*!40000 ALTER TABLE `bienvenida` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bienvenida` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -85,6 +109,7 @@ CREATE TABLE `habitaciones` (
   `imagen` varchar(255) NOT NULL,
   `precio` decimal(10,2) NOT NULL,
   `capacidad` int NOT NULL,
+  `imagen_360` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

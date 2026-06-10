@@ -3,12 +3,12 @@ var api_habitaciones = (() => {
     let archivo = null;
 
     function init() {
-        const ids = ['btn-anadir', 'btn-eliminar', 'eliminar-lista', 'form-habitacion', 'habitacion-input', 'habitacion-upload-area', 'habitacion-preview', 'habitacion-nombre', 'habitacion-descripcion-primera', 'habitacion-descripcion-segunda', 'habitacion-precio', 'habitacion-capacidad'];
+        const ids = ['btn-anadir', 'btn-eliminar', 'eliminar-lista', 'form-habitacion', 'habitacion-input', 'habitacion-upload-area', 'habitacion-preview', 'habitacion-nombre', 'habitacion-descripcion-primera', 'habitacion-descripcion-segunda', 'habitacion-precio', 'habitacion-capacidad', 'habitacion-imagen-360'];
         const allExist = ids.every(id => document.getElementById(id));
         if (!allExist) return setTimeout(init, 50);
 
         archivo = null;
-        ['habitacion-nombre', 'habitacion-descripcion-primera', 'habitacion-descripcion-segunda', 'habitacion-precio', 'habitacion-capacidad'].forEach(id => {
+        ['habitacion-nombre', 'habitacion-descripcion-primera', 'habitacion-descripcion-segunda', 'habitacion-precio', 'habitacion-capacidad', 'habitacion-imagen-360'].forEach(id => {
             document.getElementById(id).value = '';
         });
         document.getElementById('habitacion-input').value = '';
@@ -57,6 +57,7 @@ var api_habitaciones = (() => {
         const descripcion_segunda = document.getElementById('habitacion-descripcion-segunda').value.trim();
         const precio = document.getElementById('habitacion-precio').value.trim();
         const capacidad = document.getElementById('habitacion-capacidad').value.trim();
+        const imagen_360 = document.getElementById('habitacion-imagen-360').value.trim() || null;
 
         if (!nombre || !descripcion_primera || !descripcion_segunda || !precio || !capacidad) {
             toast('Todos los campos son obligatorios', 'warning');
@@ -81,7 +82,8 @@ var api_habitaciones = (() => {
                 descripcion_segunda,
                 imagen: jsonImg.ruta,
                 precio: Number(precio),
-                capacidad: Number(capacidad)
+                capacidad: Number(capacidad),
+                imagen_360
             };
 
             const res = await apiPost('habitaciones', datos);
@@ -100,7 +102,7 @@ var api_habitaciones = (() => {
 
     function limpiarFormulario() {
         archivo = null;
-        ['habitacion-nombre', 'habitacion-descripcion-primera', 'habitacion-descripcion-segunda', 'habitacion-precio', 'habitacion-capacidad'].forEach(id => {
+        ['habitacion-nombre', 'habitacion-descripcion-primera', 'habitacion-descripcion-segunda', 'habitacion-precio', 'habitacion-capacidad', 'habitacion-imagen-360'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.value = '';
         });

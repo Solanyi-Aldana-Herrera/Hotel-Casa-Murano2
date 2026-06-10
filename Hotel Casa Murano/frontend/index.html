@@ -208,11 +208,13 @@
             try {
                 // Cargar bienvenida (solo imagen)
                 const resB = await fetch(API_BASE + '/api/bienvenida');
-                const jsonB = await resB.json();
-                if (jsonB.success && jsonB.datos.length > 0) {
-                    const d = jsonB.datos[0];
-                    const imgEl = document.querySelector('.imagen_lateral img');
-                    if (d.imagen && imgEl) imgEl.src = d.imagen;
+                if (resB.ok) {
+                    const jsonB = await resB.json();
+                    if (jsonB.success && jsonB.datos.length > 0) {
+                        const d = jsonB.datos[0];
+                        const imgEl = document.querySelector('.imagen_lateral img');
+                        if (d.imagen && imgEl) imgEl.src = d.imagen;
+                    }
                 }
 
                 // Cargar slider

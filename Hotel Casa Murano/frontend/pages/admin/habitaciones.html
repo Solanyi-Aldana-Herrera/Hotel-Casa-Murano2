@@ -16,18 +16,20 @@
         outline: none;
         border-color: var(--primary);
     }
-    [data-seccion="habitaciones"] .admin-form input[type="number"] {
-        width: 100%;
-        padding: 10px 14px;
-        border-radius: 6px;
-        border: 1px solid rgba(255,255,255,0.12);
-        background: rgba(0,0,0,0.3);
-        color: var(--text-white);
-        font-family: var(--font-body);
-        font-size: 0.95rem;
-        transition: var(--transition);
-    }
-    [data-seccion="habitaciones"] .admin-form input[type="number"]:focus {
+[data-seccion="habitaciones"] .admin-form input[type="number"],
+[data-seccion="habitaciones"] .admin-form input[type="url"] {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(0,0,0,0.3);
+    color: var(--text-white);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    transition: var(--transition);
+}
+[data-seccion="habitaciones"] .admin-form input[type="number"]:focus,
+[data-seccion="habitaciones"] .admin-form input[type="url"]:focus {
         outline: none;
         border-color: var(--primary);
     }
@@ -171,6 +173,11 @@
         <div class="admin-form-group">
             <label>Capacidad</label>
             <input type="number" id="habitacion-capacidad" placeholder="Ej: 2" min="1">
+        </div>
+
+        <div class="admin-form-group">
+            <label>Link de foto 360° (Insta360)</label>
+            <input type="url" id="habitacion-imagen-360" placeholder="https://cloud-va.insta360.com/share/va/...">
         </div>
 
         <div class="admin-actions">

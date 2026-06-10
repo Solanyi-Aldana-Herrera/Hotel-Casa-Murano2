@@ -1,7 +1,7 @@
 let habitacionesData = [];
 
 // ABRIR MODAL
-function abrirModal(titulo, texto, capacidad, precio){
+function abrirModal(titulo, texto, capacidad, precio, imagen_360){
 
     document.getElementById("tituloModal").innerText = titulo;
     document.getElementById("textoModal").innerText = texto;
@@ -11,6 +11,15 @@ function abrirModal(titulo, texto, capacidad, precio){
     if (capEl) capEl.innerText = capacidad != null ? capacidad : '';
     if (preEl) preEl.innerText = precio != null ? Number(precio).toLocaleString('es-CO') : '';
 
+    const iframe = document.getElementById("iframe360");
+    if (imagen_360) {
+        iframe.src = imagen_360;
+        iframe.style.display = "block";
+    } else {
+        iframe.style.display = "none";
+        iframe.src = "";
+    }
+
     document.getElementById("modalHabitacion").style.display = "flex";
 }
 
@@ -18,6 +27,7 @@ function abrirModal(titulo, texto, capacidad, precio){
 function cerrarModal(){
 
     document.getElementById("modalHabitacion").style.display = "none";
+    document.getElementById("iframe360").src = "";
 }
 
 // CERRAR AL DAR CLICK AFUERA
@@ -57,7 +67,7 @@ async function cargarHabitaciones() {
             const btn = e.target.closest('.ver');
             if (!btn) return;
             const h = habitacionesData[btn.dataset.index];
-            if (h) abrirModal(h.nombre, h.descripcion_segunda, h.capacidad, h.precio);
+            if (h) abrirModal(h.nombre, h.descripcion_segunda, h.capacidad, h.precio, h.imagen_360);
         });
 
     } catch (e) {}

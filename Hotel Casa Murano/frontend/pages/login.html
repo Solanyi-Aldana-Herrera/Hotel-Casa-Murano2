@@ -7,6 +7,10 @@
     <meta name="viewport"
     content="width=device-width, initial-scale=1.0">
 
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
     <title>Administrador | Hotel Casa Murano</title>
 
     <link rel="stylesheet" href="/frontend/css/base.css">
@@ -72,6 +76,7 @@
                     </button>
 
                     <a href="/frontend/pages/recuperar.html" class="forgot-link">¿Olvidaste tu contraseña?</a>
+                    <a href="/frontend/index.html" class="forgot-link" style="margin-top:6px;">← Volver al inicio</a>
                 </form>
             </div>
         </div>
@@ -129,7 +134,7 @@
 
         if (datos.success) {
 
-            sessionStorage.setItem('auth_admin', '1');
+            sessionStorage.setItem('auth_admin', datos.token);
 
             window.location.href =
                 'admin.html';
@@ -149,6 +154,13 @@
     }
 
 });
+
+        window.addEventListener('pageshow', function () {
+            if (sessionStorage.getItem('auth_admin')) {
+                window.location.href = 'admin.html';
+            }
+        });
+
     </script>
 
 </body>

@@ -5,16 +5,45 @@ const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
 const crypto = require('crypto');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 const nodemailer = require('nodemailer');
 const multer = require('multer');
 const fs = require('fs');
 
 const app = express();
 
-app.use(cors());
+app.use(helmet());
+app.use(cors({
+    origin: process.env.APP_URL || 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use('/frontend', express.static(path.join(__dirname, '..', '..', 'frontend')));
+
+const JWT_SECRET = process.env.JWT_SECRET || 'HotelCasaMurano2026_secret_key';
+const SALT_ROUNDS = 10;
+
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 5,
+    message: { success: false, mensaje: 'Demasiados intentos. Intenta de nuevo en 15 minutos.' }
+});
+
+function autenticar(req, res, next) {
+    const header = req.headers['authorization'];
+    if (!header) return res.status(401).json({ success: false, mensaje: 'Token requerido' });
+    const token = header.split(' ')[1];
+    if (!token) return res.status(401).json({ success: false, mensaje: 'Token requerido' });
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+        if (err) return res.status(401).json({ success: false, mensaje: 'Token inválido o expirado' });
+        req.usuario = decoded;
+        next();
+    });
+}
 
 const conexion = mysql.createPool({
     host: process.env.DB_HOST || 'localhost',
@@ -31,46 +60,48 @@ app.get('/', (req, res) => {
     res.send('API Hotel Casa Murano funcionando');
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', loginLimiter, (req, res) => {
 
     const { usuario, contrasena } = req.body;
 
-    const sql = `
-        SELECT *
-        FROM administrador
-        WHERE usuario = ?
-        AND contrasena = ?
-    `;
+    if (!usuario || !contrasena) {
+        return res.status(400).json({ success: false, mensaje: 'Usuario y contraseña requeridos' });
+    }
 
-    conexion.query(
-        sql,
-        [usuario, contrasena],
-        (error, resultados) => {
+    const sql = 'SELECT * FROM administrador WHERE usuario = ?';
 
-            if (error) {
-                return res.status(500).json({
-                    success: false,
-                    mensaje: 'Error del servidor'
-                });
-            }
+    conexion.query(sql, [usuario], (error, resultados) => {
 
-            if (resultados.length > 0) {
-
-                return res.json({
-                    success: true,
-                    mensaje: 'Bienvenido'
-                });
-
-            } else {
-
-                return res.json({
-                    success: false,
-                    mensaje: 'Usuario o contraseña incorrectos'
-                });
-
-            }
+        if (error) {
+            return res.status(500).json({ success: false, mensaje: 'Error del servidor' });
         }
-    );
+
+        if (resultados.length === 0) {
+            return res.json({ success: false, mensaje: 'Usuario o contraseña incorrectos' });
+        }
+
+        const admin = resultados[0];
+
+        bcrypt.compare(contrasena, admin.contrasena, (err, iguales) => {
+            if (err) return res.status(500).json({ success: false, mensaje: 'Error del servidor' });
+
+            if (!iguales) {
+                return res.json({ success: false, mensaje: 'Usuario o contraseña incorrectos' });
+            }
+
+            const token = jwt.sign(
+                { id: admin.id, usuario: admin.usuario },
+                JWT_SECRET,
+                { expiresIn: '2h' }
+            );
+
+            return res.json({
+                success: true,
+                mensaje: 'Bienvenido',
+                token
+            });
+        });
+    });
 });
 
 
@@ -218,9 +249,10 @@ app.post('/actualizar-clave-directa', (req, res) => {
         }
 
         const adminId = resultados[0].id;
+        const hash = bcrypt.hashSync(contrasena, SALT_ROUNDS);
         const sqlActualizar = 'UPDATE administrador SET contrasena = ?, token_recuperacion = NULL, expiracion_token = NULL WHERE id = ?';
 
-        conexion.query(sqlActualizar, [contrasena, adminId], (error) => {
+        conexion.query(sqlActualizar, [hash, adminId], (error) => {
             if (error) {
                 return res.status(500).json({ success: false, mensaje: 'Error al cambiar la contraseña.' });
             }
@@ -251,7 +283,7 @@ const almacenamiento = multer.diskStorage({
 const upload = multer({ storage: almacenamiento });
 
 // POST /api/upload — Subir imagen (DEBE ir antes de /api/:tabla)
-app.post('/api/upload', upload.single('imagen'), (req, res) => {
+app.post('/api/upload', autenticar, upload.single('imagen'), (req, res) => {
     if (!req.file) return res.status(400).json({ success: false, mensaje: 'No se envió ninguna imagen' });
     const rutaRelativa = '/frontend/images/contenido/' + req.file.filename;
     res.json({ success: true, ruta: rutaRelativa, nombre: req.file.filename });
@@ -264,7 +296,7 @@ app.post('/api/upload', upload.single('imagen'), (req, res) => {
 const TABLAS = {
     bienvenida:           { insertar: ['imagen'] },
     galeria:              { insertar: ['imagen'] }, // Tu tabla 'galeria' solo tiene id e imagen
-    habitaciones:         { insertar: ['nombre', 'descripcion_primera', 'descripcion_segunda', 'imagen', 'precio', 'capacidad'] }, 
+    habitaciones:         { insertar: ['nombre', 'descripcion_primera', 'descripcion_segunda', 'imagen', 'precio', 'capacidad', 'imagen_360'] }, 
     informacion_contacto: { insertar: ['celular', 'email', 'direccion', 'mapa_iframe'] },
     nosotros:             { insertar: ['imagen'] }, // Tu tabla 'nosotros' solo tiene id e imagen
     mision:               { insertar: ['descripcion', 'imagen'] }, // Tabla independiente
@@ -299,7 +331,7 @@ app.get('/api/:tabla/:id', (req, res) => {
 });
 
 // POST /api/:tabla — Crear un registro
-app.post('/api/:tabla', (req, res) => {
+app.post('/api/:tabla', autenticar, (req, res) => {
     const { tabla } = req.params;
     const config = TABLAS[tabla];
     if (!config) return res.status(400).json({ success: false, mensaje: 'Tabla no válida' });
@@ -317,7 +349,7 @@ app.post('/api/:tabla', (req, res) => {
 });
 
 // PUT /api/:tabla/:id — Actualizar un registro
-app.put('/api/:tabla/:id', (req, res) => {
+app.put('/api/:tabla/:id', autenticar, (req, res) => {
     const { tabla, id } = req.params;
     const config = TABLAS[tabla];
     if (!config) return res.status(400).json({ success: false, mensaje: 'Tabla no válida' });
@@ -337,7 +369,7 @@ app.put('/api/:tabla/:id', (req, res) => {
 });
 
 // DELETE /api/:tabla/:id — Eliminar un registro
-app.delete('/api/:tabla/:id', (req, res) => {
+app.delete('/api/:tabla/:id', autenticar, (req, res) => {
     const { tabla, id } = req.params;
     if (!TABLAS[tabla]) return res.status(400).json({ success: false, mensaje: 'Tabla no válida' });
 
